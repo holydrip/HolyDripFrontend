@@ -1,0 +1,13 @@
+.button{
+    justify-self: center;
+    align-self: center;
+    width: 90%;
+    height: 90%;
+    margin-bottom: 5px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .3s;
+}
+.button:hover {
+    background-color: gray;
+}

@@ -1,0 +1,17 @@
+.card {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: auto;
+    margin-top: 10px;
+    width: 50%;
+    height: 60px;
+    border: 1px solid black;
+    border-radius: 15px;
+}
+@media (width < 800px) {
+    .card{
+        width: 95%;
+    }
+}

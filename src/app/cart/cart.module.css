@@ -1,0 +1,23 @@
+.cart {
+    position: relative;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 30px;
+}
+.price {
+    text-align: center;
+}
+.orderButton{
+    width: 350px;
+    height: 60px;
+    position: relative;
+    border-radius: 10px;
+    border: 0;
+    cursor: pointer;
+}
+.orderButton:hover{
+    background-color: #bdbdbd;
+}

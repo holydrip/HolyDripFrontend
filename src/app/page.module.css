@@ -1,0 +1,92 @@
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 80px;
+    background-image: url('../../public/images/main-page-background.jpg');
+    background-size: 100%;
+    background-position: center;
+    background-repeat: repeat;
+    width: 100%;
+    min-height: 90vh;
+    padding-bottom: 50px;
+}
+
+.banner{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 20px;
+    background-color: white;
+    height: 826px;
+}
+
+.bannerText{
+    padding-left: 70px;
+    color: black;
+    padding-top: 120px;
+    font-family: "Geist";
+    font-size: 120px;
+    line-height: 95%;
+    overflow: hidden;
+    
+}
+
+.bannerImage{
+    width: 50%;
+    height: 90%;
+}
+
+.welcomeList{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 70px;
+    color: white;
+    font-family: "Geist";
+    gap: 20px;
+}
+
+.welcomeList h1{
+    font-size: 44px;     
+}
+
+.about {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 70px;
+    color: white;
+    font-family: "Geist";
+    text-align: center;
+    gap: 20px;
+}
+
+.about h1{
+    font-size: 44px;
+}
+
+.about p{
+    font-size: 32px;
+}
+
+.welcomeListProducts {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+}
+
+.offers {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 70px;
+    color: white;
+    font-family: "Geist";
+    text-align: center;
+    gap: 20px;
+}
+
+.offers h1{
+    font-size: 44px;
+}

@@ -1,0 +1,17 @@
+.quantity {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    gap: 5px;
+}
+.noArrows::-webkit-outer-spin-button,
+.noArrows::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+.noArrows {
+    -moz-appearance: textfield;
+    width: 30px;
+}
+.button{
+    cursor: pointer;
+}

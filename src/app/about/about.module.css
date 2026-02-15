@@ -1,0 +1,130 @@
+.aboutPage {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    height: 100%;
+    padding-bottom: 30px;
+    overflow: scroll;
+}
+
+.description {
+    background-color: var(--block-background-color);
+    position: relative;
+    width: 100%;
+    height: 300px;
+}
+
+.descriptionText {
+    position: relative;
+    margin-left: 10%;
+    width: 50%;
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr 1fr;
+    align-items: center;
+    font-size: 17px;
+}
+
+.services {
+    position: relative;
+    width: 100%;
+    height: auto;
+    font-size: 20px;
+}
+
+.servicesText {
+    margin: 0 30px 30px 30px;
+}
+
+.servicesBlock {
+    background-color: var(--block-background-color);
+    position: relative;
+    width: 100%;
+    height: 90%;
+}
+
+.servicesBlock:last-child {
+    padding-bottom: 30px;
+}
+
+.heading {
+    margin: 30px;
+}
+
+.about {
+    position: relative;
+    width: 100%;
+}
+
+.aboutContent {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.aboutImage {
+    position: relative;
+    border: 1px solid black;
+}
+
+.aboutText {
+    font-size: 20px;
+    margin: 30px
+}
+
+.reviews {
+    position: relative;
+    width: 100%;
+}
+
+.review {
+    position: relative;
+    width: 80%;
+    justify-self: center;
+}
+
+.reviewsBlock {
+    position: relative;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+}
+
+.reviewsImage {
+    aspect-ratio: 1/1;
+    position: relative;
+    width: 50px;
+    border-radius: 50%;
+    background-color: gray;
+    margin: 20px 20px 20px 0;
+}
+
+.contacts {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.contact {
+    margin-left: 50px;
+    position: relative;
+    width: 500px;
+    text-align: center;
+    background-color: #a1a1a1;
+}
+
+@media (width < 800px) {
+    .aboutContent {
+        flex-direction: column;
+    }
+
+    .descriptionText {
+        width: 90%;
+    }
+    .contact{
+        width: 70%;
+    }
+}
