@@ -5,7 +5,7 @@ import { useMemo } from "react";
 import { useMounted } from "@/lib/useMounted";
 import { useCart } from "@/lib/cart";
 import { Button } from "@/components/ui/Button";
-import { formatMoney, getDiscountedPrice } from "@/lib/pricing";
+import { formatMoney } from "@/lib/pricing";
 
 export default function CartPage() {
   const mounted = useMounted();
@@ -25,7 +25,7 @@ export default function CartPage() {
 
   if (!mounted) {
     return (
-      <main className="pb-10">
+      <main className="p-10">
         <h1 className="text-2xl font-semibold">Cart</h1>
         <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
           <div className="text-sm text-gray-600">Loading cart...</div>

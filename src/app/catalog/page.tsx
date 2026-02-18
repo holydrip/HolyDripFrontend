@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { Loader } from "@/components/ui/Loader";
 import { Skeleton } from "@/components/ui/Skeleton";
 
+
 type ApiResp = {
     items: Product[];
     page: number;
@@ -60,7 +61,7 @@ export default function CatalogPage() {
 
     return (
         <main className="p-10 flex gap-10 flex-col">
-            <h1 className="text-4xl text-white text-center font-semibold">ITEMS</h1>
+            <h1 className="text-4xl text-white text-center">ITEMS</h1>
 
             <div className="">
                 <FiltersBar
@@ -85,7 +86,7 @@ export default function CatalogPage() {
                     </div>
                 ) : empty ? (
                     <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-10 text-center">
-                        <div className="text-sm font-medium">No products</div>
+                        <div className="text-sm font-medium text-white">No products</div>
                         <div className="mt-1 text-sm text-gray-600">Try changing filters.</div>
                     </div>
                 ) : (
@@ -106,7 +107,7 @@ export default function CatalogPage() {
                                     {loading ? "Loading..." : "Load more"}
                                 </Button>
                             ) : (
-                                <div className="text-sm text-gray-500">End of results</div>
+                                <div className="text-sm text-white  ">End of results</div>
                             )}
                         </div>
 

@@ -6,6 +6,12 @@ import { formatMoney, getDiscountedPrice } from "@/lib/pricing";
 import ImageGallery from "./ImageGallery";
 import SizeSelector from "./SizeSelector";
 import AddToCartButton from "./AddToCartButton";
+import { Righteous } from "next/font/google";
+
+const righteous = Righteous({
+  weight: "400",
+  subsets: ['latin-ext']
+})
 
 export default function ProductClient({ product }: { product: Product }) {
   const [size, setSize] = useState<string | null>(null);
@@ -43,7 +49,7 @@ export default function ProductClient({ product }: { product: Product }) {
 
             <AddToCartButton product={product} size={size} />
 
-            <div className="pt-2 text-sm leading-6 text-gray-600 whitespace-pre-line">
+            <div className={`pt-2 text-sm leading-6 text-gray-600 whitespace-pre-line ${righteous.className}`}>
               {product.description}
             </div>
           </div>

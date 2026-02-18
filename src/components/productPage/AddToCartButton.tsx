@@ -21,7 +21,7 @@ export default function AddToCartButton({ product, size }: { product: Product; s
         toast.success("Added to cart", { description: `${product.name} • ${size}` });
       }}
       className={
-        "mt-2 h-10 w-full rounded-lg bg-black text-sm font-semibold text-white shadow-sm transition " +
+        "cursor-pointer mt-2 h-10 w-full rounded-lg bg-black text-sm font-semibold text-white shadow-sm transition" +
         (disabled ? "cursor-not-allowed opacity-50" : "hover:opacity-90")
       }
     >
