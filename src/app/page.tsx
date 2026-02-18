@@ -7,6 +7,8 @@ import { motion } from "framer-motion";
 import ProductCard from "@/components/product-card/ProductCard";
 import { CardCarousel } from "@/components/card-carousel/CardCarousel";
 import { Countdown } from "@/components/countdown/Countdown";
+import { useEffect } from "react";
+import { CategoryService } from "@/services/category.service";
 
 const font = Geist({ subsets: ["latin-ext"] });
 
@@ -15,6 +17,20 @@ export default function Page() {
   if (Date.now() < dropDate.getTime()) {
     return <Countdown date={dropDate}/>
   }
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+			try {
+				const data = await CategoryService.getAll();
+				console.log(data);
+			} catch (error) {
+				console.error('Ошибка при загрузке:', error);
+			} 
+		};
+
+		fetchProducts();
+  }, [])
+  
   return (
     <div className={Styles.wrapper}>
       <div className={`${Styles.banner} ${font.className}`}>
