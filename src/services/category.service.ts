@@ -11,8 +11,4 @@ export const CategoryService = {
         const {data} = await $api.get<ICategory>(`/category/${id}`)
         return data
     },
-
-    // async createCategory(data) {
-    //     const req = await $api.post('/category/', data)
-    // }
 }

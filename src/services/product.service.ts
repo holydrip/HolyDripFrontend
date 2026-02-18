@@ -11,9 +11,4 @@ export const ProductService = {
             const {data} = await $api.get<Product>(`/product/${id}`)
             return data
         },
-
-        // async createProduct(data) {
-        //     const req = await $api.post('/product/', data)
-        //     return req
-        // }
 }
