@@ -1,4 +1,4 @@
-export function FAQ() {
+export function Page() {
   return (
     <div></div>
   )
