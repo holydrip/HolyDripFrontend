@@ -17,7 +17,7 @@ type ApiResp = {
     hasMore: boolean;
 };
 
-function buildQuery(f: Filters, page: number, category?: string) {
+function buildQuery(f: Filters, page: number) {
     const sp = new URLSearchParams();
     sp.set("page", String(page));
     sp.set("limit", "9");

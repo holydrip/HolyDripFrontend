@@ -1,8 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import type { Product } from "@/lib/types";
-import { formatMoney, getDiscountedPrice } from "@/lib/pricing"; 
 import ImageGallery from "./ImageGallery";
 import SizeSelector from "./SizeSelector";
 import AddToCartButton from "./AddToCartButton";
