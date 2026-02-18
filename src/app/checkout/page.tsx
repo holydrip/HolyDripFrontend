@@ -6,7 +6,7 @@ import { useMounted } from "@/lib/useMounted";
 import { useCart } from "@/lib/cart";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
-import { formatMoney, getDiscountedPrice } from "@/lib/pricing";
+import { formatMoney } from "@/lib/pricing";
 
 export default function CheckoutPage() {
   const mounted = useMounted();
