@@ -1,25 +1,43 @@
 "use client";
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Geist } from "next/font/google";
-import Logo from '../../../public/images/Logo.png'
+import Logo from '../../../public/images/Logo.png';
 import Image from 'next/image';
-
-
-const geist = Geist({subsets: ['latin-ext']})
+import { CategoryService } from '@/services/category.service';
+import { ICategory } from '@/types/category';
 
 export default function Header() {
-    return (
-    <div className={`flex px-10 py-5 items-center gap-15 text-md text-white bg-[#5E5E5E] ${geist.className}`}>
-      <Image src={Logo} alt="logo"></Image>
-      <Link className='hover:opacity-90 transition duration-100 ease-in' href='/'>HOME</Link>
-      <Link className='hover:opacity-90 transition duration-100 ease-in' href='/catalog'>SALES</Link>
-      <Link className='hover:opacity-90 transition duration-100 ease-in' href='#'>HOODIES</Link>
-      <Link className='hover:opacity-90 transition duration-100 ease-in' href='#'>T-SHIRTS</Link>
-      <Link className='hover:opacity-90 transition duration-100 ease-in' href='#'>SHIRTS</Link>
-      <Link className='hover:opacity-90 transition duration-100 ease-in' href='#'>JEANS</Link>
-      <Link className='hover:opacity-90 transition duration-100 ease-in' href='#'>SHORTS</Link>
-      <Link className='hover:opacity-90 transition duration-100 ease-in' href='#'>HEADWEAR</Link>
-      <Link className='hover:opacity-90 transition duration-100 ease-in' href='#'>ABOUT US</Link>
-    </div>
-  )
+  const [categories, setCategories] = useState<ICategory[]>([]);
+
+  useEffect(() => {
+    CategoryService.getAll()
+      .then((data) => setCategories(data))
+  }, []);
+
+  const linkStyle = "hover:opacity-70 transition duration-200 ease-in whitespace-nowrap uppercase";
+
+  return (
+    <nav className={`flex px-10 py-5 items-center gap-8 text-sm font-medium text-white bg-[#5E5E5E] overflow-x-auto`}>
+      <Link href="/">
+        <Image src={Logo} alt="Holy Drip Logo" width={40} height={20} priority />
+      </Link>
+
+      <div className="flex items-center gap-8">
+        <Link className={linkStyle} href='/'>HOME</Link>
+        <Link className={linkStyle} href='/catalog'>SALES</Link>
+
+        {categories.map((cat) => (
+          <Link 
+            key={cat.id} 
+            className={linkStyle} 
+            href={`/catalog/${cat.slug}`}
+          >
+            {cat.name}
+          </Link>
+        ))}
+
+        <Link className={linkStyle} href='/about'>ABOUT US</Link>
+      </div>
+    </nav>
+  );
 }
