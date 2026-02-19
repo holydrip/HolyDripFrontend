@@ -1,5 +1,4 @@
 "use client";
-import { Geist } from "next/font/google";
 import Styles from "./page.module.css";
 import Image from "next/image";
 import bannerLogo from "../../public/images/logo-full.jpg";
