@@ -25,7 +25,7 @@ export default function CartPage() {
 
   if (!mounted) {
     return (
-      <main className="p-10">
+      <main>
         <h1 className="text-2xl font-semibold">Cart</h1>
         <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
           <div className="text-sm text-gray-600">Loading cart...</div>
@@ -35,18 +35,18 @@ export default function CartPage() {
   }
 
   return (
-    <main className="pb-10">
+    <div className="p-5">
       <h1 className="text-2xl font-semibold">Cart</h1>
 
       {items.length === 0 ? (
-        <div className="mt-6 rounded-2xl border border-dashed border-gray-200 bg-white p-10 text-center">
+        <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-10 text-center">
           <div className="text-sm font-medium">Your cart is empty</div>
           <div className="mt-3">
             <a className="text-sm text-gray-700 underline" href="/catalog">Go to catalog</a>
           </div>
         </div>
       ) : (
-        <div className="mt-6 grid gap-6 lg:grid-cols-3">
+        <div className="grid gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2 space-y-3">
             {items.map(({ product, qty }) => {
               // const unit = getDiscountedPrice(product.price, product.discountPct);
@@ -73,7 +73,7 @@ export default function CartPage() {
                         <Button variant="ghost" onClick={() => remove(product.id)}>Remove</Button>
                       </div>
 
-                      <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                           <Button variant="secondary" onClick={() => setQty(product.id, qty - 1)}>-</Button>
                           <div className="w-10 text-center text-sm">{qty}</div>
@@ -99,6 +99,6 @@ export default function CartPage() {
           </div>
         </div>
       )}
-    </main>
+    </div>
   );
 }

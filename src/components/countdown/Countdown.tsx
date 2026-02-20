@@ -49,21 +49,21 @@ export function Countdown({ date }: CountdownProps) {
   }, []);
 
   return (
-    <div className={Styles.wrapper}>
+    <div className={'flex grow-1 flex-col text-center justify-center items-center gap-10 bg-black text-white'}>
       <Image
         className={Styles.logoImage}
         src={logo}
         alt="logo"
         draggable={false}
       />
-      <h1 className={Styles.loadingCaption}>CULT IS LOADING...</h1>
-      <div className={Styles.timers}>
+      <h1 className={'text-2xl sm:text-5xl font-semibold'}>CULT IS LOADING...</h1>
+      <div className={'flex gap-5 flex-col sm:flex-row'}>
         <Timer label="Days" number={time.days}></Timer>
         <Timer label="Hours" number={time.hours}></Timer>
         <Timer label="Minutes" number={time.minutes}></Timer>
         <Timer label="Seconds" number={time.seconds}></Timer>
       </div>
-      <input className={Styles.emailInput} type="email" placeholder="Email address"/>
+      <input className={'w-50 sm:w-75 border-solid border-[gray] outline-none border-1 rounded-md p-5 text-md'} type="email" placeholder="Email address"/>
     </div>
   );
 }

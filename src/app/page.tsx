@@ -11,7 +11,7 @@ import { Countdown } from "@/components/countdown/Countdown";
 const font = Geist({ subsets: ["latin-ext"] });
 
 export default function Page() {
-  const dropDate = new Date("2026-02-14T00:00:00")
+  const dropDate = new Date("2026-02-16T00:00:00")
   if (Date.now() < dropDate.getTime()) {
     return <Countdown date={dropDate}/>
   }
