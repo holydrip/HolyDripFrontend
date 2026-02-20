@@ -20,6 +20,22 @@ export default defineType({
             validation: rule => rule.required()
         }),
         defineField({
+            name: 'sizes',
+            title: 'Доступные размеры',
+            type: 'array',
+            of: [{ type: 'string' }],
+            options: {
+                    list: [
+                    { title: 'XS', value: 'XS' },
+                    { title: 'S', value: 'S' },
+                    { title: 'M', value: 'M' },
+                    { title: 'L', value: 'L' },
+                    { title: 'XL', value: 'XL' },
+                    { title: 'XXL', value: 'XXL' },
+                ],
+            },
+        }),
+        defineField({
             name: 'price',
             title: 'Цена товара',
             type: 'number',
