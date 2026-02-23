@@ -4,10 +4,10 @@ import Link from 'next/link';
 import Logo from '../../../public/images/Logo.png';
 import Image from 'next/image';
 import { CategoryService } from '@/services/category.service';
-import { ICategory } from '@/types/category';
+import { Category } from '@/types/category';
 
 export default function Header() {
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
 
   useEffect(() => {
     CategoryService.getAll()

@@ -2,13 +2,13 @@
 
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Product } from "@/lib/types";
+import { Product } from "../../types/product";
 import { Button } from "@/components/ui/Button";
-import { useCart } from "@/lib/cart";
+import { useCart } from "../../context/CartContext";
 import Link from "next/link";
 
 export function ProductCard({ product }: { product: Product }) {
-  const add = useCart((s) => s.add);
+  const {addToCart} = useCart();
 
   const [added, setAdded] = useState(false);
 
@@ -45,7 +45,7 @@ export function ProductCard({ product }: { product: Product }) {
           onClick={(e) => {
             e.preventDefault();
             const defaultSize = product.sizes?.[0] || "One Size";
-            add(product, defaultSize); 
+            addToCart(product, defaultSize); 
             setAdded(true);
           }}
           className="shrink-0"

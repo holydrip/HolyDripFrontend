@@ -1,4 +1,5 @@
-import { Category, Product } from "./types";
+import { Product } from "../types/product";
+import { Category } from "@/types/category";
 
 export const categories: Category[] = [
   {
@@ -16,6 +17,7 @@ export const categories: Category[] = [
       sizes: ["S", "M", "L"],
       description: "Отличный городской автомобиль с экономичным расходом.",
     }],
+    slug: "123"
   },
 ];
 

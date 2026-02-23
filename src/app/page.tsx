@@ -6,14 +6,14 @@ import { motion } from "framer-motion";
 import ProductCard from "@/components/product-card/ProductCard";
 import { CardCarousel } from "@/components/card-carousel/CardCarousel";
 import { Countdown } from "@/components/countdown/Countdown";
-import { fadeInUp, staggerContainer, scaleIn } from "@/lib/animations";
+import { fadeInUp, staggerContainer, scaleIn } from "../lib/animations";
 
 const mockSlides = [
-  { id: "1", name: "Black Tee", price: 500 },
-  { id: "2", name: "Black Tee", price: 500 },
-  { id: "3", name: "Black Tee", price: 500 },
-  { id: "4", name: "Black Tee", price: 500 },
-  { id: "5", name: "Black Tee", price: 500 },
+  { id: "1", name: "Black Tee", price: 500, images: [], categoryId: "1", sizes: ["S"] },
+  { id: "2", name: "Black Tee", price: 500, images: [], categoryId: "1", sizes: ["S"] },
+  { id: "3", name: "Black Tee", price: 500, images: [], categoryId: "1", sizes: ["S"] },
+  { id: "4", name: "Black Tee", price: 500, images: [], categoryId: "1", sizes: ["S"] },
+  { id: "5", name: "Black Tee", price: 500, images: [], categoryId: "1", sizes: ["S"] },
 ];
 
 export default function Page() {
@@ -62,7 +62,7 @@ export default function Page() {
         <div className={Styles.welcomeListProducts}>
           {[1, 2, 3].map((item) => (
               <motion.div key={item} variants={fadeInUp}>
-                <ProductCard product={{ id: String(item), name: "Black Tee", price: 500 }} />
+                <ProductCard product={mockSlides[0]} />
               </motion.div>
           ))}
         </div>

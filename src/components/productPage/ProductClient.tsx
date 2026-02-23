@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Product } from "@/lib/types";
+import type { Product } from "@/types/product";
 import ImageGallery from "./ImageGallery";
 import SizeSelector from "./SizeSelector";
 import AddToCartButton from "./AddToCartButton";
