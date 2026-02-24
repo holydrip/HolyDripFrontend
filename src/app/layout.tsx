@@ -23,7 +23,7 @@ const dm = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://holydrip.com"),
+  metadataBase: new URL("https://holydrip.com.ua"),
   title: {
     default: "HOLY DRIP",
     template: "%s | HOLY DRIP",
@@ -63,7 +63,7 @@ export const metadata: Metadata = {
     title: "HOLY DRIP",
     description:
       "Народжений у Києві. Кураторський архів рідкісних дизайнерських артефактів. Rick Owens. Balenciaga. Margiela. Vetements. ERD.",
-    url: "https://holydrip.com",
+    url: "https://holydrip.com.ua",
     siteName: "HOLY DRIP",
     locale: "uk_UA",
     type: "website",

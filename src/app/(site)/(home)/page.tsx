@@ -1,5 +1,3 @@
-"use client";
-import { motion } from "framer-motion";
 import { DM_Sans } from "next/font/google";
 import { Countdown } from "@/components/countdown/Countdown";
 import { Banner } from "./components/Banner";
@@ -9,16 +7,36 @@ import About from "./components/About";
 import Recommended from "./components/Recommended";
 import Collection from "./components/Collection";
 import Sales from "./components/Sales";
+import Divider from "./components/Divider";
+
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: {
+    absolute: "HOLY DRIP — Кураторський fashion-архів у Києві",
+  },
+  description:
+    "Відкрийте для себе ексклюзивний архів дизайнерського одягу в Україні. Кураторська підбірка Rick Owens, Balenciaga, Vetements та інших концептуальних брендів. Оригінали та рідкісні знахідки.",
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: "HOLY DRIP — Fashion Archive Kyiv",
+    description:
+      "Концептуальний стрітвір та архівні артефакти. Рідкісні оригінали, відібрані з наміром. Доставка по Україні.",
+    url: "https://holydrip.com.ua",
+    images: [
+      {
+        url: "../../../public/images/logo-full-dark.jpg",
+        width: 1200,
+        height: 630,
+        alt: "HOLY DRIP Fashion Archive",
+      },
+    ],
+  },
+};
 
 const dm = DM_Sans({ subsets: ["latin"], weight: ["300", "400"] });
-
-const Divider = () => (
-  <motion.div
-    variants={{ hidden: { scaleX: 0 }, visible: { scaleX: 1, transition: { duration: 1 } } }}
-    initial="hidden" whileInView="visible" viewport={{ once: true }}
-    className="w-full h-[1px] bg-white/10 origin-left"
-  />
-);
 
 export default function Page() {
   const dropDate = new Date("2025-03-01T00:00:00");

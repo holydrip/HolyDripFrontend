@@ -5,6 +5,7 @@ import { useMounted } from "@/lib/useMounted";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/context/CartContext";
 import { useEffect, useState } from "react";
+
 export default function CartPage() {
   const mounted = useMounted();
   const { cart, removeFromCart, setQuantity } = useCart();
@@ -43,11 +44,10 @@ export default function CartPage() {
       ) : (
         <div className="grid gap-6 lg:grid-cols-3 justify-center">
           <div className="lg:col-span-2 space-y-3">
-            {cart.map(({ id, name, price, images, quantity }) => {
-              // const unit = getDiscountedPrice(product.price, product.discountPct);
+            {cart.map(({ id, name, price, images, quantity, size }) => {
               return (
                 <div
-                  key={id}
+                  key={`${id}-${size}`}
                   className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm"
                 >
                   <div className="flex gap-4">
@@ -65,6 +65,9 @@ export default function CartPage() {
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <div className="text-sm font-medium">{name}</div>
+                          <div className="text-xs text-gray-500 mt-0.5">
+                            Size: <span className="font-semibold text-gray-800">{size}</span>
+                          </div>
                           <div className="mt-1 text-sm text-gray-600">
                             {price} each
                           </div>
@@ -73,7 +76,7 @@ export default function CartPage() {
                         <Button
                           variant="ghost"
                           className="cursor-pointer"
-                          onClick={() => removeFromCart(id)}
+                          onClick={() => removeFromCart(id, size)}
                         >
                           Remove
                         </Button>
@@ -84,7 +87,7 @@ export default function CartPage() {
                           <Button
                             variant="secondary"
                             className="cursor-pointer"
-                            onClick={() => setQuantity(id, quantity - 1)}
+                            onClick={() => setQuantity(id, size, quantity - 1)}
                           >
                             -
                           </Button>
@@ -94,7 +97,7 @@ export default function CartPage() {
                           <Button
                             variant="secondary"
                             className="cursor-pointer"
-                            onClick={() => setQuantity(id, quantity + 1)}
+                            onClick={() => setQuantity(id, size, quantity + 1)}
                           >
                             +
                           </Button>

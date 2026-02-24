@@ -20,7 +20,6 @@ export default function About() {
     const sv = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.8 } } };
 
     useEffect(() => {
-        // Робимо запит прямо тут
         const query = `*[_type == "about-us"][0]{
             title,
             desc,
@@ -32,7 +31,6 @@ export default function About() {
         }).catch(err => console.error("Sanity fetch error:", err));
     }, []);
 
-    // Якщо даних ще немає, не показуємо блок, щоб не було блимання тексту
     if (!data) return null;
 
     return (
@@ -62,7 +60,6 @@ export default function About() {
                 </motion.a>
             </div>
 
-            {/* Статистика з Sanity */}
             <div className="grid grid-cols-3 gap-px bg-white/[0.06]">
                 {data.stats?.map((s, i) => (
                     <motion.div 

@@ -28,6 +28,18 @@ export interface ProductInCart {
   id: string;
   name: string;
   price: number;
+  size: string;
   images: string[];
   quantity: number;
+}
+
+export interface ITelegramBot {
+  name: string
+  phone: string
+  telegram: string
+  items: {
+    name: string;
+    size: string;
+  }[]
+  totalPrice: number
 }
