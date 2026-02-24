@@ -19,7 +19,6 @@ export default function Recommended() {
         const fetchRecommended = async () => {
             try {
                 const res = await ProductService.getRecommended();
-                console.log(res)
                 setRecommended(res);
             } catch (err) {
                 console.error(err);
@@ -32,40 +31,43 @@ export default function Recommended() {
     return (
         <>
             {recommended && recommended.products.length > 0 && (
-                    <motion.section 
-                        variants={sv} initial="hidden" whileInView="visible" viewport={{ once: true }}
-                        className="flex flex-col gap-8 px-6 sm:px-12 md:px-[70px] mt-24"
-                    >
-                        <div className="flex items-end justify-between">
-                            <div className="flex flex-col gap-2">
-                                <SectionLabel text="Just Arrived" />
-                                <h2 className={`${fraktur.className} text-white`} style={{ fontSize: "clamp(32px, 5vw, 56px)" }}>
-                                    {recommended.title}
-                                </h2>
-                            </div>
-                            <Link href="/catalog" className="hidden sm:flex items-center gap-2 text-white/20 hover:text-white text-[10px] uppercase tracking-[3px] transition-colors duration-300 font-light">
-                                View All
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <path d="M5 12h14M12 5l7 7-7 7"/>
-                                </svg>
-                            </Link>
+                <motion.section 
+                    variants={sv} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                    className="flex flex-col gap-8 px-6 sm:px-12 md:px-[70px] mt-24"
+                >
+                    <div className="flex items-end justify-between">
+                        <div className="flex flex-col gap-2">
+                            <SectionLabel text="Нові надходження" />
+                            <h2 className={`${fraktur.className} text-white`} style={{ fontSize: "clamp(32px, 5vw, 56px)" }}>
+                                {recommended.title}
+                            </h2>
                         </div>
+                        <Link href="/catalog" className="hidden sm:flex items-center gap-2 text-white/20 hover:text-white text-[10px] uppercase tracking-[3px] transition-colors duration-300 font-light">
+                            Дивитись всі
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
+                                <path d="M5 12h14M12 5l7 7-7 7"/>
+                            </svg>
+                        </Link>
+                    </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
-                            {recommended.products.map((p, i) => (
-                                <motion.div 
-                                    key={p.id} 
-                                    initial={{ opacity: 0, y: 24 }} 
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true }} 
-                                    transition={{ duration: 0.5, delay: i * 0.1 }}
-                                >
-                                    <ProductCard product={{...p, images: p.images?.length ? p.images : [null] as any}} />
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.section>
-                )}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                        {recommended.products.map((p, i) => (
+                            <motion.div 
+                                key={p.id} 
+                                initial={{ opacity: 0, y: 24 }} 
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }} 
+                                transition={{ duration: 0.5, delay: i * 0.1 }}
+                            >
+                                <ProductCard product={{
+                                    ...p, 
+                                    images: p.images ?? [] 
+                                }} />
+                            </motion.div>
+                        ))}
+                    </div>
+                </motion.section>
+            )}
         </>
     )
 }
