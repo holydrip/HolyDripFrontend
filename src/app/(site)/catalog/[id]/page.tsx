@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
@@ -8,26 +8,32 @@ import { FiltersBar, Filters } from "@/components/catalog/FiltersBar";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { CategoryService } from "@/services/category.service";
 
-export default function CatalogPage({params}: {params: {id: string}}) {
+interface Props {
+  params: Promise<{ id: string }>;
+}
+
+export default function CatalogPage({ params }: Props) {
   const [filters, setFilters] = useState<Filters>({ min: 0, max: 30000, sort: "relevance" });
   const [allItems, setAllItems] = useState<Product[]>([]);
   const [initialLoading, setInitialLoading] = useState(true);
   
   useEffect(() => {
     async function fetchProducts() {
-      const {id} = await params
-      // console.log(id)
+      const { id } = await params;
+      
       try {
-        const {products} = await CategoryService.getCategoryById(id)
-        setAllItems(products);
+        const data = await CategoryService.getCategoryById(id);
+        if (data && data.products) {
+          setAllItems(data.products);
+        }
       } catch (error) {
-        console.error("Error loading products:", error);
+        console.error("Помилка завантаження товарів:", error);
       } finally {
         setInitialLoading(false);
       }
     }
     fetchProducts();
-  }, []);
+  }, [params]);
 
   const filteredItems = useMemo(() => {
     let result = [...allItems];
@@ -83,7 +89,6 @@ export default function CatalogPage({params}: {params: {id: string}}) {
           value={filters}
           onChange={setFilters}
           onReset={() => setFilters({ min: 0, max: 30000, sort: "relevance" })}
-          maxCap={30000}
         />
       </motion.div>
 
