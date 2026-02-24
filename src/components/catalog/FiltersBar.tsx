@@ -10,7 +10,6 @@ export function FiltersBar({
   value,
   onChange,
   onReset,
-  maxCap = 30000,
 }: {
   value: Filters;
   onChange: (next: Filters) => void;

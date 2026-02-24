@@ -11,7 +11,7 @@ export default function DeliveryPage() {
                 <ul className="list-none pl-0 mb-10 space-y-4">
                     <li className="relative pl-6 text-white/70 font-light">
                         <span className="absolute left-0 top-2.5 w-1.5 h-1.5 bg-white/40 rounded-full"></span>
-                        <strong className="text-white font-normal mr-2">Способи доставки:</strong> На відділення, у поштомат або кур'єром за вашою адресою.
+                        <strong className="text-white font-normal mr-2">Способи доставки:</strong> На відділення, у поштомат або кур&apos;єром за вашою адресою.
                     </li>
                     <li className="relative pl-6 text-white/70 font-light">
                         <span className="absolute left-0 top-2.5 w-1.5 h-1.5 bg-white/40 rounded-full"></span>

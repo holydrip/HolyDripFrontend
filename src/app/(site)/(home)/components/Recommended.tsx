@@ -6,6 +6,7 @@ import { UnifrakturMaguntia } from "next/font/google";
 import { useEffect, useState } from "react";
 import { ProductService } from "@/services/product.service";
 import { Product } from "@/lib/types";
+import Link from "next/link";
 
 const fraktur = UnifrakturMaguntia({ subsets: ["latin"], weight: ["400"] });
 
@@ -42,12 +43,12 @@ export default function Recommended() {
                                     {recommended.title}
                                 </h2>
                             </div>
-                            <a href="/catalog" className="hidden sm:flex items-center gap-2 text-white/20 hover:text-white text-[10px] uppercase tracking-[3px] transition-colors duration-300 font-light">
+                            <Link href="/catalog" className="hidden sm:flex items-center gap-2 text-white/20 hover:text-white text-[10px] uppercase tracking-[3px] transition-colors duration-300 font-light">
                                 View All
                                 <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
                                     <path d="M5 12h14M12 5l7 7-7 7"/>
                                 </svg>
-                            </a>
+                            </Link>
                         </div>
 
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">

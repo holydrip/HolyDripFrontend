@@ -5,6 +5,7 @@ import { useMounted } from "@/lib/useMounted";
 import { Button } from "@/components/ui/Button";
 import { useCart } from "@/context/CartContext";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 export default function CartPage() {
   const mounted = useMounted();
@@ -36,9 +37,9 @@ export default function CartPage() {
         <div className="rounded-2xl border border-dashed border-gray-200 bg-white p-10 text-center">
           <div className="text-sm font-medium">Your cart is empty</div>
           <div>
-            <a className="text-sm text-gray-700 underline" href="/catalog">
+            <Link className="text-sm text-gray-700 underline" href="/catalog">
               Go to catalog
-            </a>
+            </Link>
           </div>
         </div>
       ) : (

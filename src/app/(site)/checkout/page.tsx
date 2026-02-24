@@ -70,7 +70,7 @@ export default function CheckoutPage() {
         <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-10 text-center shadow-sm">
           <div className="text-lg font-semibold">Успішно 🎉</div>
           <div className="mt-2 text-sm text-gray-600">
-            Твоє замовлення прийнято! Ми зв'яжемося з тобою у Telegram.
+            Твоє замовлення прийнято! Ми зв&apos;яжемося з тобою у Telegram.
           </div>
           <div className="mt-6 flex justify-center gap-3">
             <a href="/catalog">
@@ -105,7 +105,7 @@ export default function CheckoutPage() {
 
             <div className="mt-4 grid gap-3 sm:grid-cols-2">
               <div>
-                <div className="text-xs text-gray-600">Ім'я</div>
+                <div className="text-xs text-gray-600">Ім&apos;я</div>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
@@ -146,7 +146,7 @@ export default function CheckoutPage() {
                     telegram: tag,
                     items: cart.map(item => ({
                       name: `${item.name} (x${item.quantity})`,
-                      size: (item as any).size || 'Не вказано'
+                      size: (item as { size?: string }).size || 'Не вказано'
                     })), 
                     totalPrice
                   });
@@ -163,10 +163,10 @@ export default function CheckoutPage() {
             <div className="text-sm font-medium">Ваше замовлення</div>
 
             <div className="mt-4 space-y-3">
-              {cart.map(({ id, name, price, quantity }) => {
+              {cart.map(({ id, name, price, quantity, size }) => {
                 return (
                   <div
-                    key={id}
+                    key={`${id}-${size}`}
                     className="flex items-start justify-between gap-3 text-sm"
                   >
                     <div className="text-gray-700">

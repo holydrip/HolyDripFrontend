@@ -29,7 +29,7 @@ export default function ReturnsPage() {
                 <ul className="list-none pl-0 mb-8 space-y-4">
                     <li className="relative pl-6 text-white/70 font-light">
                         <span className="absolute left-0 top-2.5 w-1.5 h-1.5 bg-white/40 rounded-full"></span>
-                        Зв'яжіться з нами в Telegram/Viber або напишіть на пошту.
+                        Зв&apos;яжіться з нами в Telegram/Viber або напишіть на пошту.
                     </li>
                     <li className="relative pl-6 text-white/70 font-light">
                         <span className="absolute left-0 top-2.5 w-1.5 h-1.5 bg-white/40 rounded-full"></span>

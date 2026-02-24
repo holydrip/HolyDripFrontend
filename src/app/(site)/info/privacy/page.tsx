@@ -20,7 +20,7 @@ export default function PrivacyPage() {
                     </li>
                     <li className="relative pl-6 text-white/70 font-light">
                         <span className="absolute left-0 top-2.5 w-1.5 h-1.5 bg-white/40 rounded-full"></span>
-                        Зв'язку з вами щодо деталей замовлення.
+                        Зв&apos;язку з вами щодо деталей замовлення.
                     </li>
                     <li className="relative pl-6 text-white/70 font-light">
                         <span className="absolute left-0 top-2.5 w-1.5 h-1.5 bg-white/40 rounded-full"></span>
