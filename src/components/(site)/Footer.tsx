@@ -83,7 +83,6 @@ export default function Footer() {
           <p className={`${fraktur.className} text-white/10 text-lg`}>In Swag We Trust.</p>
           <div className="flex items-center gap-8">
             <p className="text-white/15 text-[10px] uppercase tracking-[3px] font-light">© {currentYear} Holy Drip</p>
-            <p className="text-white/15 text-[10px] uppercase tracking-[3px] font-light">Зроблено в Україні 🇺🇦</p>
           </div>
         </div>
       </div>

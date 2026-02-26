@@ -150,7 +150,7 @@ export default function Header() {
                   onClick={() => setOpen(false)}
                   className="font-sans flex items-center justify-center w-full h-14 text-[12px] font-medium uppercase tracking-[4px] text-black bg-white hover:bg-white/80 transition-colors duration-300"
                 >
-                  Cart (0)
+                  Cart ({cartAmount})
                 </Link>
               </div>
             </motion.div>

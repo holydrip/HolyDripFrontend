@@ -7,10 +7,13 @@ import { ProductGrid } from "@/components/product/ProductGrid";
 import { FiltersBar, Filters } from "@/components/catalog/FiltersBar";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { CategoryService } from "@/services/category.service";
+import { UnifrakturMaguntia } from "next/font/google";
 
 interface Props {
   params: Promise<{ id: string }>;
 }
+
+const fraktur = UnifrakturMaguntia({ subsets: ["latin"], weight: ["400"] });
 
 export default function CatalogPage({ params }: Props) {
   const [filters, setFilters] = useState<Filters>({ min: 0, max: 30000, sort: "relevance" });
@@ -72,8 +75,8 @@ export default function CatalogPage({ params }: Props) {
       >
         <div className="flex flex-col gap-2">
           <span className="text-white/25 text-[10px] uppercase tracking-[5px] font-light">Каталог</span>
-          <h1 className="font-fraktur text-white text-6xl md:text-8xl lg:text-[110px] leading-none">
-            Колекція
+          <h1 className={`font-fraktur text-white text-6xl md:text-8xl lg:text-[110px] leading-none ${fraktur.className}`}>
+            Collection
           </h1>
         </div>
       </motion.div>

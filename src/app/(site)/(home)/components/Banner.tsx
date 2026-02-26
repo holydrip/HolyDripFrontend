@@ -1,14 +1,23 @@
 "use client";
+import { Category } from "@/lib/types";
+import { CategoryService } from "@/services/category.service";
 import { motion } from "framer-motion";
 import { Libre_Baskerville, UnifrakturMaguntia, DM_Sans } from "next/font/google";
+import { useLayoutEffect, useState } from "react";
 
 const cormorant = Libre_Baskerville({ subsets: ["latin"], weight: ["400", "700"], style: ["normal", "italic"] });
 const fraktur = UnifrakturMaguntia({ subsets: ["latin"], weight: ["400"] });
 const dm = DM_Sans({ subsets: ["latin"], weight: ["300", "400"] });
 
-const categories = ["Hoodies", "T-Shirts", "Jeans", "Shorts", "Headwear"];
+// const categories = ["Hoodies", "T-Shirts", "Jeans", "Shorts", "Headwear"];
 
 export function Banner() {
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useLayoutEffect(() => {
+    CategoryService.getAll().then(res => setCategories(res))
+  }, [])
+
   return (
     <div
       className="relative w-full overflow-hidden flex flex-col justify-between px-6 sm:px-12 md:px-[70px] pt-16 pb-12 sm:pb-16 md:pb-20"
@@ -75,13 +84,13 @@ export function Banner() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
               className={`${dm.className} flex flex-wrap gap-2`}>
               {categories.map((cat, i) => (
-                <motion.a key={cat} href="/catalog"
+                <motion.a key={cat.id} href="/catalog"
                   initial={{ opacity: 0 }} animate={{ opacity: 1 }}
                   transition={{ delay: 0.9 + i * 0.07 }}
                   whileHover={{ backgroundColor: "rgba(255,255,255,1)", color: "#000" }}
                   className="px-3 py-1 border border-white/15 text-white/35 text-[10px] uppercase tracking-[2px] transition-all duration-300 cursor-pointer font-light"
                 >
-                  {cat}
+                  {cat.name}
                 </motion.a>
               ))}
             </motion.div>
