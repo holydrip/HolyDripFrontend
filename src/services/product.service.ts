@@ -8,8 +8,8 @@ export const ProductService = {
         return data
     },
 
-    async getProductById(id: string) {
-        const {data} = await $api.get<Product>(`/product/${id}`)
+    async getProductBySlug(slug: string) {
+        const {data} = await $api.get<Product>(`/product/${slug}`)
         return data
     },
 
@@ -24,6 +24,7 @@ export const ProductService = {
         "products": products[]->{
             "id": _id,
             "name": title,
+            "slug": slug.current,
             price,
             "images": images[].secure_url,
             sizes,
@@ -46,6 +47,7 @@ export const ProductService = {
             "products": products[]->{
                 "id": _id,
                 "name": title,
+                "slug": slug.current,
                 price,
                 "images": images[].secure_url,
                 sizes,
@@ -69,6 +71,7 @@ export const ProductService = {
             "products": products[]->{
                 "id": _id,
                 "name": title,
+                "slug": slug.current,
                 price,
                 "images": images[].secure_url, 
                 sizes,

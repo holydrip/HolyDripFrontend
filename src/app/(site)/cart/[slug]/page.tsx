@@ -6,11 +6,11 @@ import { notFound } from "next/navigation";
 export async function generateMetadata({ 
   params 
 }: { 
-  params: Promise<{ id: string }> 
+  params: Promise<{ slug: string }> 
 }): Promise<Metadata> {
-  const { id } = await params;
+  const { slug } = await params;
   
-  const product = await ProductService.getProductById(id);
+  const product = await ProductService.getProductBySlug(slug);
 
   if (!product) {
     return {
@@ -45,11 +45,11 @@ export async function generateMetadata({
 export default async function ProductPage({ 
   params 
 }: { 
-  params: Promise<{ id: string }> 
+  params: Promise<{ slug: string }> 
 }) {
-  const { id } = await params;
+  const { slug } = await params;
 
-  const product = await ProductService.getProductById(id);
+  const product = await ProductService.getProductBySlug(slug);
 
   if (!product) {
     notFound();

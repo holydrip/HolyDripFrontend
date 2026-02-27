@@ -13,6 +13,17 @@ export default defineType({
             validation: rule => rule.required()
         }),
         defineField({
+            name: 'slug',
+            title: 'Уникальный слаг (URL)',
+            type: 'slug',
+            description: 'Используется для создания красивой ссылки на товар. Нажмите "Generate" после ввода названия.',
+            options: {
+                source: 'title',
+                maxLength: 96,
+            },
+            validation: rule => rule.required()
+        }),
+        defineField({
             name: 'category',
             title: 'Категория',
             type: 'reference',
