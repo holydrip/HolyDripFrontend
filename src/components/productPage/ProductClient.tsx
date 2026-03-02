@@ -2,14 +2,14 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Libre_Baskerville, UnifrakturMaguntia, DM_Sans } from "next/font/google";
+import { Libre_Baskerville, DM_Sans, Cinzel_Decorative } from "next/font/google";
 import type { Product } from "@/lib/types";
 import ImageGallery from "./ImageGallery";
 import SizeSelector from "./SizeSelector";
 import AddToCartButton from "./AddToCartButton";
 
 const serif = Libre_Baskerville({ subsets: ["latin"], weight: ["400", "700"], style: ["normal", "italic"] });
-const fraktur = UnifrakturMaguntia({ subsets: ["latin"], weight: ["400"] });
+const fraktur = Cinzel_Decorative({ subsets: ["latin"], weight: ["700"] });
 const dm = DM_Sans({ subsets: ["latin"], weight: ["300", "400"] });
 
 export default function ProductClient({ product }: { product: Product }) {
