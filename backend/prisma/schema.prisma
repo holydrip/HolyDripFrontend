@@ -1,0 +1,132 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  role      Role     @default(USER)
+  phone     String?  @unique
+  email     String   @unique
+  password  String
+  address   String?
+  avatarUrl String?
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  tokens RefreshToken[]
+  orders Order[]
+  discount Discount?
+
+  @@map("users")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @map("user_id")
+
+  @@map("refresh_tokens")
+}
+
+model Category {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  sanityId  String   @unique
+  slug      String   @unique
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  products Product[]
+
+  @@map("categories")
+}
+
+model Product {
+  id String @id @default(uuid())
+  name String
+  description String?
+  price Decimal?
+  images String[] @default([])
+  sizes  String[] @default([])
+  measurements Json?
+  slug   String?  @unique
+
+  sanityId    String?  @unique
+
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId String @map("category_id")
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  orderItems OrderItem[]
+}
+
+enum OrderStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
+model Order {
+  id        String   @id @default(uuid())
+  name      String
+  phone     String
+  telegram  String?
+  address   String?
+  totalPrice Decimal
+  status    OrderStatus @default(PENDING)
+  paymentId String?
+
+  userId    String?     @map("user_id")
+  user      User?       @relation(fields: [userId], references: [id])
+
+  items     OrderItem[]
+  
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("orders")
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String   @map("order_id")
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  productId String   @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id])
+  
+  size      String
+  quantity  Int      @default(1)
+  price     Decimal
+
+  @@map("order_items")
+}
+
+model Discount {
+  id        String   @id @default(uuid())
+  userId    String   @unique @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  percent   Int      @default(0)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("discounts")
+}

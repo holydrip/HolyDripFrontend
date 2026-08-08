@@ -1,0 +1,66 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --block-background-color: rgba(0, 0, 0, 0.027);
+}
+
+.font-fraktur {
+  font-family: var(--font-fraktur), cursive !important;
+}
+
+body.lang-uk .font-fraktur {
+  font-family: var(--font-monomakh), cursive !important;
+}
+
+.font-fraktur-en {
+  font-family: var(--font-fraktur), cursive !important;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  margin: 0;
+  background-color: #050505;
+  color: white;
+}
+
+.animated-underline {
+  position: relative;
+  display: inline-block;
+}
+
+.animated-underline::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  width: 0;
+  height: 1px;
+  background-color: currentColor;
+  transition: all 300ms ease;
+}
+
+.animated-underline:hover::after {
+  width: 100%;
+  left: 0;
+}
+
+/* Custom Scrollbar for Textareas */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
