@@ -1,0 +1,74 @@
+.wrapper { 
+    background-color: black;
+    color: white;
+    display: flex;
+    flex-grow: 1;
+    height: 100%;
+    margin: 0;
+    padding-top: 20px;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px
+}
+
+.logoImage {
+    width: 400px;
+    height: auto;
+}
+
+.loadingCaption {
+    font-size: 52px;
+}
+
+.timers {
+    display: flex;
+    justify-content: center;
+    gap: 50px;
+}
+
+.timer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timerNumber {
+    font-size: 40px;
+}
+
+.timerLabel {
+    font-size: 20px;
+    color: gray
+}
+
+.emailInput {
+    width: 400px;
+    height: 50px;
+    outline: none;
+    border: 2px solid gray;
+    border-radius: 15px;
+    background-color: transparent;
+    color: white;
+    padding: 5px 20px;
+    font-size: 20px;
+
+}
+
+@media (max-width: 768px) {
+    .logoImage {
+        width: 250px
+    }
+
+    .loadingCaption {
+        font-size: 36px;
+    }
+
+    .timers {
+        gap: 20px;
+        font-size: 20px;
+    }
+
+    .emailInput {
+        width: 250px;
+    }
+}

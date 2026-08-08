@@ -1,0 +1,133 @@
+{
+  "Header": {
+    "home": "HOME",
+    "catalog": "CATALOG",
+    "about_us": "ABOUT US",
+    "cart": "CART",
+    "profile": "PROFILE",
+    "profile_mobile": "Profile",
+    "cart_mobile": "Cart"
+  },
+  "Search": {
+    "placeholder": "Search...",
+    "no_results": "Nothing found"
+  },
+  "Footer": {
+    "desc": "Closed service for curated search of rare items.",
+    "clients": "FOR CLIENTS",
+    "delivery": "Payment & Delivery",
+    "returns": "Exchange & Returns",
+    "catalog": "Catalog",
+    "info": "INFORMATION",
+    "offer": "Public Offer",
+    "privacy": "Privacy Policy",
+    "about": "About Us",
+    "contacts": "CONTACTS"
+  },
+  "Home": {
+    "studio_label": "Holy Drip — Studio",
+    "brand_name_line1": "Holy",
+    "brand_name_line2": "Drip",
+    "new_drop": "NEW DROP",
+    "shop_now": "SHOP NOW",
+    "sales": "SALES",
+    "view_all": "View All",
+    "collection": "COLLECTION",
+    "recommended": "RECOMMENDED",
+    "motto": "Clothes for those who dare to stand out",
+    "about_service": "About Service",
+    "learn_more": "Learn more",
+    "faq_label": "Info & Rules",
+    "faq_title": "FAQ",
+    "faq_footer": "In Swag We Trust."
+  },
+  "Product": {
+    "add_to_cart": "ADD TO CART",
+    "choose_size": "Choose a size",
+    "description": "DESCRIPTION",
+    "materials": "MATERIALS",
+    "size_guide": "SIZE GUIDE",
+    "sold_out": "SOLD OUT",
+    "quick_buy": "Quick Buy",
+    "please_choose_size": "Please choose a size",
+    "added_to_cart": "Added to cart"
+  },
+  "Cart": {
+    "title": "CART",
+    "empty": "Your cart is empty",
+    "total": "Total",
+    "checkout": "CHECKOUT",
+    "loading": "Loading cart...",
+    "go_to_catalog": "Go to catalog",
+    "size": "Size:",
+    "each": "each",
+    "remove": "Remove"
+  },
+  "Profile": {
+    "title": "PROFILE",
+    "cabinet": "Cabinet",
+    "personal_data": "Personal Details",
+    "name": "Name",
+    "email": "Email",
+    "phone": "Phone",
+    "discount": "Personal Discount",
+    "discount_for_all": "for all items",
+    "discount_desc": "Your discount is automatically applied to items in your cart at checkout.",
+    "orders": "Order History",
+    "no_orders": "You haven't made any orders yet",
+    "go_to_catalog": "Go to catalog",
+    "order_number": "Order #",
+    "status_pending": "Pending",
+    "logout": "LOGOUT",
+    "profile": "Profile",
+    "cart": "Cart"
+  },
+  "Login": {
+    "title_login": "LOG IN",
+    "title_register": "REGISTER",
+    "email": "Email",
+    "password": "Password",
+    "name": "Name",
+    "submit_login": "LOG IN",
+    "submit_register": "Create account",
+    "toggle_login": "No account? Register",
+    "toggle_register": "Already have an account? Login",
+    "loading": "Please wait...",
+    "auth_label": "Authorization"
+  },
+  "QuickBuy": {
+    "name": "Name",
+    "phone": "Phone",
+    "redirecting": "Redirecting...",
+    "pay": "Pay"
+  },
+  "Catalog": {
+    "title": "Catalog",
+    "subtitle": "Collection",
+    "not_found": "Nothing found",
+    "reset_filters": "Reset filters"
+  },
+  "AboutPage": {
+    "our_story": "Our Story",
+    "title": "About Us",
+    "prev": "Prev",
+    "next": "Next",
+    "footer": "In Swag We Trust.",
+    "slide_1_title": "Crisis",
+    "slide_1_text": "HOLY DRIP didn't start as a business. It started as a haunting question: what can fashion reveal about the soul when the world around us crumbles? We didn't start with a product — but with a crisis. A philosophical one.",
+    "slide_2_title": "The Beginning",
+    "slide_2_text": "Born in Kyiv — the cultural heart of Eastern Europe. A city where culture never surrendered, even when reality demanded it. At the moment when fashion became the last territory of independence, Holy Drip took its first breath.",
+    "slide_3_title": "Exploration",
+    "slide_3_text": "We took our time. For over a year we studied in silence: suppliers who guard quality like a sacred doctrine, logistics separating amateurs from institutions, European projects — their triumphs and fatal mistakes.",
+    "slide_4_title": "Philosophy",
+    "slide_4_text": "Fashion is the language of the body, elevated to the frequency of the soul. Your form is divine architecture. Wear it with intention, not mediocrity. Commerce without honesty is blasphemy. Behind every transaction is a human.",
+    "slide_5_title": "The Offering",
+    "slide_5_text": "Holy Drip operates as curated access — not a marketplace. Every piece: hand-selected. Every search: personally executed. Every consultation: held by someone who knows your name.",
+    "slide_6_title": "The Initiated",
+    "slide_6_text": "Our family — those seeking self-discovery through knowledge and clothing. We live at fashion parties, underground shows, sacred gatherings where style is a religion.",
+    "slide_7_title": "The Threshold",
+    "slide_7_text": "Today, Holy Drip enters its first public chapter. If you seek more than clothing — if you seek transformation — Welcome.",
+    "slide_8_title": "Becoming",
+    "slide_8_text": "This project breathes and grows. You write our history. We stand at the beginning, but we will be remembered as the moment resale became a ceremony. History is forged."
+  }
+}
