@@ -5,6 +5,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { createClient } from '@sanity/client';
 import axios from 'axios';
+import { v2 as cloudinary } from 'cloudinary';
 
 // Simple in-memory state for adding a product
 interface AddProductState {
@@ -33,6 +34,12 @@ export class BotUpdate {
       useCdn: false,
       apiVersion: '2023-05-03',
       token: this.configService.get<string>('SANITY_API_TOKEN'),
+    });
+
+    cloudinary.config({
+      cloud_name: this.configService.get<string>('CLOUDINARY_CLOUD_NAME'),
+      api_key: this.configService.get<string>('CLOUDINARY_API_KEY'),
+      api_secret: this.configService.get<string>('CLOUDINARY_API_SECRET'),
     });
   }
 
@@ -125,10 +132,10 @@ export class BotUpdate {
       const fileId = photo.file_id;
       const fileUrl = await ctx.telegram.getFileLink(fileId);
       
-      // Upload to Sanity
-      const imageResponse = await axios.get(fileUrl.href, { responseType: 'arraybuffer' });
-      const sanityImageAsset = await this.sanityClient.assets.upload('image', imageResponse.data, {
-        filename: `${state.name}.jpg`,
+      // Upload to Cloudinary
+      const cloudinaryResponse = await cloudinary.uploader.upload(fileUrl.href, {
+        folder: 'holydrip/products',
+        public_id: state.name!.toLowerCase().replace(/\s+/g, '-'),
       });
 
       // Find Category
@@ -138,20 +145,21 @@ export class BotUpdate {
       }
       if (!category) throw new Error("Немає категорій в БД");
 
-      // Generate Sanity ID
+      // Generate IDs
       const sanityId = `product-${Date.now()}`;
+      const slug = state.name!.toLowerCase().replace(/\s+/g, '-');
       
       // Create product in Prisma
       const newProduct = await this.prisma.product.create({
         data: {
           name: state.name!,
           price: state.price!,
-          description: "Товар додано з Telegram",
+          description: state.description || "Товар додано з Telegram",
           sizes: state.sizes!,
           categoryId: category.id,
-          images: [sanityImageAsset.url],
+          images: [cloudinaryResponse.secure_url],
           sanityId: sanityId,
-          slug: state.name!.toLowerCase().replace(/\s+/g, '-'),
+          slug: slug,
         }
       });
 
@@ -160,12 +168,20 @@ export class BotUpdate {
         await this.sanityClient.create({
           _type: 'product',
           _id: sanityId,
-          name: newProduct.name,
+          title: newProduct.name, // Fixed: Schema expects 'title'
           slug: { _type: 'slug', current: newProduct.slug },
           price: Number(newProduct.price),
+          description: newProduct.description,
+          category: { _type: 'reference', _ref: category.sanityId }, // Assuming category.sanityId exists
           images: [{
-            _type: 'image',
-            asset: { _type: 'reference', _ref: sanityImageAsset._id }
+            _type: 'cloudinary.asset',
+            secure_url: cloudinaryResponse.secure_url,
+            public_id: cloudinaryResponse.public_id,
+            format: cloudinaryResponse.format,
+            version: cloudinaryResponse.version,
+            resource_type: cloudinaryResponse.resource_type,
+            width: cloudinaryResponse.width,
+            height: cloudinaryResponse.height,
           }],
           sizes: newProduct.sizes,
         });
@@ -173,7 +189,7 @@ export class BotUpdate {
         this.logger.error("Error creating in Sanity", e);
       }
 
-      await ctx.reply(`✅ Товар успішно додано!\nНазва: ${newProduct.name}\nЦіна: ${newProduct.price} UAH\nSanity URL: ${sanityImageAsset.url}`);
+      await ctx.reply(`✅ Товар успішно додано!\nНазва: ${newProduct.name}\nЦіна: ${newProduct.price} UAH\nCloudinary URL: ${cloudinaryResponse.secure_url}`);
       this.userStates.delete(ctx.from!.id);
     } catch (e) {
       this.logger.error(e);
