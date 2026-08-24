@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsArray, ValidateNested, IsNumber } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, ValidateNested, IsNumber, IsOptional } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class OrderItemDto {
@@ -49,4 +49,8 @@ export class CreateOrderDto {
     @IsNumber()
     @IsNotEmpty()
     totalPrice: number;
+
+    @IsString()
+    @IsOptional()
+    paymentMethod?: string;
 }
