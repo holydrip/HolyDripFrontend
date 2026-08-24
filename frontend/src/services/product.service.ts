@@ -4,18 +4,63 @@ import { client } from "@/sanity/lib/client";
 
 export const ProductService = {
     async getAll() {
-        const {data} = await $api.get<Product[]>('/product/')
-        return data
+        const query = `*[_type == "product"]{
+            "id": _id,
+            "name": title,
+            "slug": slug.current,
+            price,
+            "images": images[].secure_url,
+            sizes,
+            description,
+            "measurements": measurements[]{ size, details },
+            "categoryId": category->slug.current
+        }`;
+        try {
+            return await client.fetch(query);
+        } catch (error) {
+            console.error("Sanity Fetch Error (Product getAll):", error);
+            return [];
+        }
     },
 
     async getProductBySlug(slug: string) {
-        const {data} = await $api.get<Product>(`/product/${slug}`)
-        return data
+        const query = `*[_type == "product" && slug.current == $slug][0]{
+            "id": _id,
+            "name": title,
+            "slug": slug.current,
+            price,
+            "images": images[].secure_url,
+            sizes,
+            description,
+            "measurements": measurements[]{ size, details },
+            "categoryId": category->slug.current
+        }`;
+        try {
+            return await client.fetch(query, { slug });
+        } catch (error) {
+            console.error("Sanity Fetch Error (getProductBySlug):", error);
+            return null;
+        }
     },
 
-    async getProductsByCategoryId(id: string){
-        const {data} = await $api.get<Product[]>(`/product/category/${id}`)
-        return data;
+    async getProductsByCategoryId(id: string) {
+        const query = `*[_type == "product" && references($id)]{
+            "id": _id,
+            "name": title,
+            "slug": slug.current,
+            price,
+            "images": images[].secure_url,
+            sizes,
+            description,
+            "measurements": measurements[]{ size, details },
+            "categoryId": category->slug.current
+        }`;
+        try {
+            return await client.fetch(query, { id });
+        } catch (error) {
+            console.error("Sanity Fetch Error (getProductsByCategoryId):", error);
+            return [];
+        }
     },
 
     async getRecommended() {
