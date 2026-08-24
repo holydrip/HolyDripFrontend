@@ -191,9 +191,9 @@ export class BotUpdate {
 
       await ctx.reply(`✅ Товар успішно додано!\nНазва: ${newProduct.name}\nЦіна: ${newProduct.price} UAH\nCloudinary URL: ${cloudinaryResponse.secure_url}`);
       this.userStates.delete(ctx.from!.id);
-    } catch (e) {
+    } catch (e: any) {
       this.logger.error(e);
-      await ctx.reply('Сталася помилка при створенні товару.');
+      await ctx.reply(`Сталася помилка при створенні товару: ${e.message || JSON.stringify(e)}`);
       this.userStates.delete(ctx.from!.id);
     }
   }
