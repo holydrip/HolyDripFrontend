@@ -8,11 +8,12 @@ import axios from 'axios';
 
 // Simple in-memory state for adding a product
 interface AddProductState {
-  step: 'IDLE' | 'AWAITING_NAME' | 'AWAITING_PRICE' | 'AWAITING_CATEGORY' | 'AWAITING_SIZES' | 'AWAITING_PHOTO';
+  step: 'IDLE' | 'AWAITING_NAME' | 'AWAITING_PRICE' | 'AWAITING_CATEGORY' | 'AWAITING_SIZES' | 'AWAITING_DESCRIPTION' | 'AWAITING_PHOTO';
   name?: string;
   price?: number;
   categoryName?: string;
   sizes?: string[];
+  description?: string;
 }
 
 @Update()
@@ -94,8 +95,13 @@ export class BotUpdate {
         break;
       case 'AWAITING_SIZES':
         state.sizes = text.split(',').map(s => s.trim());
+        state.step = 'AWAITING_DESCRIPTION';
+        await ctx.reply(`Розміри: ${state.sizes.join(', ')}\nТепер напишіть опис товару (текст):`);
+        break;
+      case 'AWAITING_DESCRIPTION':
+        state.description = text;
         state.step = 'AWAITING_PHOTO';
-        await ctx.reply(`Розміри: ${state.sizes.join(', ')}\nСупер! Залишилося лише відправити фото товару (надішли одне фото).`);
+        await ctx.reply(`Опис збережено!\nСупер! Залишилося лише відправити фото товару (надішли одне фото).`);
         break;
     }
   }
