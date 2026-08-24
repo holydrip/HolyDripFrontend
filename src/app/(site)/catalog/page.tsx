@@ -22,7 +22,7 @@ export default function CatalogPage() {
     async function fetchProducts() {
       try {
         const res = await ProductService.getAll();
-        setAllItems(res);
+        setAllItems(res || []);
       } catch (error) {
         console.error("Error loading products:", error);
       } finally {
