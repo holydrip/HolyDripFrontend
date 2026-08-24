@@ -18,15 +18,17 @@ export default function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [category, setCategory] = useState<Category[]>([]);
   const [cartAmount, setCartAmount] = useState<number>(0);
+  const [mobileCatalogOpen, setMobileCatalogOpen] = useState(false);
   const {cart} = useCart();
   const { t } = useTranslation("Header");
 
-  const staticLinksBefore = [
+  const navLinks = [
     { label: t("home"), href: "/" },
-    { label: t("catalog"), href: "/catalog" },
-  ];
-
-  const staticLinksAfter = [
+    { 
+      label: t("catalog"), 
+      href: "/catalog",
+      subLinks: category?.map(c => ({ label: c.name, href: `/catalog/${c.id}` })) || []
+    },
     { label: t("about_us"), href: "/about" },
   ];
 
@@ -47,12 +49,6 @@ export default function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const allLinks = [
-    ...staticLinksBefore,
-    ...(category || []).map(c => ({ label: c.name, href: `/catalog/${c.id}` })),
-    ...staticLinksAfter
-  ];
-
   return (
     <>
       <header
@@ -71,14 +67,30 @@ export default function Header() {
         </Link>
 
         <nav className="hidden md:flex items-center gap-6 lg:gap-10">
-          {allLinks.map((l) => (
-            <Link
-              key={l.label}
-              href={l.href}
-              className="font-sans text-[10px] font-medium uppercase tracking-[3px] text-white/60 hover:text-white transition-colors duration-300 animated-underline"
-            >
-              {l.label}
-            </Link>
+          {navLinks.map((l) => (
+            <div key={l.label} className="relative group">
+              <Link
+                href={l.href}
+                className="font-sans text-[10px] font-medium uppercase tracking-[3px] text-white/60 hover:text-white transition-colors duration-300 animated-underline"
+              >
+                {l.label}
+              </Link>
+              {l.subLinks && l.subLinks.length > 0 && (
+                <div className="absolute top-full left-0 pt-6 opacity-0 translate-y-2 pointer-events-none group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto transition-all duration-300 z-50">
+                  <div className="bg-[#0a0a0a] border border-white/10 p-4 flex flex-col gap-3 min-w-[200px]">
+                    {l.subLinks.map(sub => (
+                      <Link 
+                        key={sub.label} 
+                        href={sub.href}
+                        className="font-sans text-[10px] font-medium uppercase tracking-[2px] text-white/50 hover:text-white transition-colors"
+                      >
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
           ))}
         </nav>
 
@@ -149,27 +161,67 @@ export default function Header() {
 
               <div className="relative z-10 flex-1 flex flex-col justify-center px-8 sm:px-12 gap-8">
                 <nav className="flex flex-col gap-6">
-                  {allLinks.map((l, i) => {
+                  {navLinks.map((l, i) => {
                     const roman = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"][i] || i.toString();
+                    const hasSub = l.subLinks && l.subLinks.length > 0;
+                    
                     return (
                       <motion.div
                         key={l.label}
-                        initial={{ opacity: 0, y: 30 }}
+                        initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 + i * 0.08, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                        transition={{ delay: 0.2 + i * 0.08, duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                        className="flex flex-col gap-4"
                       >
-                        <Link
-                          href={l.href}
-                          onClick={() => setOpen(false)}
-                          className="group flex items-end gap-6 w-max"
-                        >
-                          <span className="font-serif text-sm text-white/20 group-hover:text-white/40 mb-2 transition-colors duration-500 italic">
+                        <div className="flex items-center gap-4">
+                          <span className="font-serif text-xs text-white/20 italic">
                             {roman}.
                           </span>
-                          <span className="font-fraktur text-5xl sm:text-6xl text-white/60 group-hover:text-white transition-all duration-500 group-hover:translate-x-3 inline-block">
+                          <Link
+                            href={l.href}
+                            onClick={() => !hasSub && setOpen(false)}
+                            className="font-fraktur text-3xl sm:text-4xl text-white/80 hover:text-white transition-colors"
+                          >
                             {l.label}
-                          </span>
-                        </Link>
+                          </Link>
+                          {hasSub && (
+                            <button 
+                              onClick={() => setMobileCatalogOpen(!mobileCatalogOpen)}
+                              className="ml-auto w-8 h-8 flex items-center justify-center border border-white/20 rounded-full text-white/60"
+                            >
+                              {mobileCatalogOpen ? "-" : "+"}
+                            </button>
+                          )}
+                        </div>
+                        
+                        <AnimatePresence>
+                          {hasSub && mobileCatalogOpen && (
+                            <motion.div 
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden flex flex-col pl-8 gap-4"
+                            >
+                              <Link 
+                                href="/catalog" 
+                                onClick={() => setOpen(false)}
+                                className="font-sans text-xs uppercase tracking-[3px] text-white/60 pt-2"
+                              >
+                                Всі товари
+                              </Link>
+                              {l.subLinks!.map(sub => (
+                                <Link
+                                  key={sub.label}
+                                  href={sub.href}
+                                  onClick={() => setOpen(false)}
+                                  className="font-sans text-xs uppercase tracking-[2px] text-white/40 hover:text-white transition-colors"
+                                >
+                                  {sub.label}
+                                </Link>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
                       </motion.div>
                     );
                   })}
