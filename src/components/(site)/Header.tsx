@@ -27,7 +27,12 @@ export default function Header() {
     { 
       label: t("catalog"), 
       href: "/catalog",
-      subLinks: category?.map(c => ({ label: c.name, href: `/catalog/${c.id}` })) || []
+      subLinks: category
+        ?.filter(c => {
+          const nameLower = c.name.toLowerCase();
+          return !nameLower.includes("ua brands") && !nameLower.includes("in ua");
+        })
+        .map(c => ({ label: c.name, href: `/catalog/${c.id}` })) || []
     },
     { label: t("about_us"), href: "/about" },
   ];

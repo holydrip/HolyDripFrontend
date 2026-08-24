@@ -22,7 +22,7 @@ export const CategoryService = {
             "id": _id,
             "name": title,
             "slug": slug.current,
-            "products": *[_type == "product" && references(^._id)]{
+            "products": *[_type == "product" && (references(^._id) || title match ^.title)]{
                 "id": _id,
                 "name": title,
                 "slug": slug.current,
