@@ -17,7 +17,6 @@ export default function CheckoutPage() {
   const [phone, setPhone] = useState("");
   const [tag, setTag] = useState("@");
   const [success, setSuccess] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<"mono" | "cod">("mono");
   
   const tagRef = useRef<HTMLInputElement>(null);
   const prefix = "@";
@@ -136,40 +135,6 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <div className="mt-10 pt-10 border-t border-white/10">
-              <div className="text-[10px] uppercase tracking-[3px] text-white/50 mb-6">Спосіб оплати</div>
-              <div className="flex flex-col gap-4">
-                <label className="flex items-center gap-4 p-5 border transition-all duration-300 cursor-pointer bg-white/[0.02] hover:bg-white/[0.05] border-white/10 hover:border-white/30">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="mono"
-                    checked={paymentMethod === "mono"}
-                    onChange={() => setPaymentMethod("mono")}
-                    className="w-4 h-4 accent-white bg-transparent border-white/20"
-                  />
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[11px] uppercase tracking-[1px] text-white">Повна оплата онлайн</span>
-                    <span className="text-[10px] text-white/40 font-light">Монобанк, Apple/Google Pay, Оплата частинами</span>
-                  </div>
-                </label>
-                <label className="flex items-center gap-4 p-5 border transition-all duration-300 cursor-pointer bg-white/[0.02] hover:bg-white/[0.05] border-white/10 hover:border-white/30">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="cod"
-                    checked={paymentMethod === "cod"}
-                    onChange={() => setPaymentMethod("cod")}
-                    className="w-4 h-4 accent-white bg-transparent border-white/20"
-                  />
-                  <div className="flex flex-col gap-1">
-                    <span className="text-[11px] uppercase tracking-[1px] text-white">Накладений платіж</span>
-                    <span className="text-[10px] text-white/40 font-light">Оплата при отриманні на Новій Пошті</span>
-                  </div>
-                </label>
-              </div>
-            </div>
-
             <div className="mt-10">
               <button
                 className="w-full border border-white/20 bg-transparent text-white py-4 text-[10px] uppercase tracking-[3px] hover:bg-white/[0.05] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
@@ -190,8 +155,7 @@ export default function CheckoutPage() {
                           quantity: item.quantity,
                           price: item.price
                         })), 
-                        totalPrice,
-                        paymentMethod
+                        totalPrice
                       })
                     });
                     
@@ -208,7 +172,7 @@ export default function CheckoutPage() {
                   }
                 }}
               >
-                {paymentMethod === "mono" ? "Оформити та оплатити" : "Оформити замовлення"}
+                Оформити замовлення та оплатити
               </button>
             </div>
           </div>
