@@ -35,7 +35,7 @@ export default function ProductClient({ product }: { product: Product }) {
         <motion.div
           initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20"
+          className="grid grid-cols-1 md:grid-cols-2 gap-12 md:gap-20 items-start"
         >
           <ImageGallery images={product.images} alt={product.name} />
 
