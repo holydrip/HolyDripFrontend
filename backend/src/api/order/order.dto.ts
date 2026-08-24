@@ -49,8 +49,4 @@ export class CreateOrderDto {
     @IsNumber()
     @IsNotEmpty()
     totalPrice: number;
-
-    @IsString()
-    @IsOptional()
-    paymentMethod?: string;
 }

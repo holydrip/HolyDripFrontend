@@ -38,12 +38,10 @@ export class OrderService {
 
         // 2. Generate Payment Link
         let paymentUrl = '';
-        if (dto.paymentMethod !== 'cod') {
-            try {
-                paymentUrl = await this.paymentService.createInvoice(order.id, Number(order.totalPrice), dto.items);
-            } catch (e) {
-                this.logger.error('Failed to create payment invoice', e);
-            }
+        try {
+            paymentUrl = await this.paymentService.createInvoice(order.id, Number(order.totalPrice), dto.items);
+        } catch (e) {
+            this.logger.error('Failed to create payment invoice', e);
         }
 
         // 3. Send Telegram Notification
@@ -56,7 +54,7 @@ export class OrderService {
             <b>Товары:</b>
             ${dto.items.map(i => `- ${i.name} (${i.size}) x${i.quantity}`).join('\n') || 'Пусто'}
             <b>Сумма:</b> ${dto.totalPrice} UAH
-            <b>Оплата:</b> ${dto.paymentMethod === 'cod' ? 'Накладений платіж (При отриманні)' : 'Ожидает (Mono Pay)'}
+            <b>Оплата:</b> Ожидает (Mono Pay)
             <b>ID Заказа:</b> <code>${order.id}</code>
         `;
 
