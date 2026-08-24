@@ -10,8 +10,8 @@ export default function ImageGallery({ images, alt }: { images: string[]; alt: s
   const activeSrc = safeImages[active] ?? safeImages[0];
 
   return (
-    <div className="grid gap-3 md:grid-cols-[52px_1fr]">
-      <div className="order-2 flex gap-2 overflow-x-auto md:order-1 md:flex-col md:overflow-visible">
+    <div className="grid gap-4 lg:grid-cols-[60px_1fr] items-start">
+      <div className="order-2 flex gap-3 overflow-x-auto lg:order-1 lg:flex-col lg:overflow-visible">
         {safeImages.map((src, idx) => {
           const selected = idx === active;
           return (
@@ -21,8 +21,8 @@ export default function ImageGallery({ images, alt }: { images: string[]; alt: s
               onClick={() => setActive(idx)}
               aria-label={`View image ${idx + 1}`}
               className={cn(
-                "relative h-11 w-11 shrink-0 overflow-hidden rounded border",
-                selected ? "border-zinc-900" : "border-zinc-300 hover:border-zinc-500"
+                "relative h-14 w-14 shrink-0 overflow-hidden border transition-colors",
+                selected ? "border-white" : "border-white/10 hover:border-white/50"
               )}
             >
               <Image src={src} alt={`${alt} thumbnail ${idx + 1}`} fill sizes="44px" className="object-cover" />
@@ -31,12 +31,12 @@ export default function ImageGallery({ images, alt }: { images: string[]; alt: s
         })}
       </div>
 
-      <div className="order-1 overflow-hidden rounded border border-zinc-300 bg-white md:order-2">
-        <div className="relative aspect-[4/3] w-full md:aspect-square">
+      <div className="order-1 overflow-hidden border border-white/10 bg-white/[0.02] lg:order-2">
+        <div className="relative aspect-[4/3] w-full lg:aspect-[4/5]">
           {activeSrc ? (
-            <Image src={activeSrc} alt={alt} fill priority sizes="(max-width: 768px) 100vw, 520px" className="object-contain p-4" />
+            <Image src={activeSrc} alt={alt} fill priority sizes="(max-width: 1024px) 100vw, 520px" className="object-cover" />
           ) : (
-            <div className="flex h-full items-center justify-center text-sm text-zinc-500">No image</div>
+            <div className="flex h-full items-center justify-center text-sm text-white/30 uppercase tracking-widest">No image</div>
           )}
         </div>
       </div>
