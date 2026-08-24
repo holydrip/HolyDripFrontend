@@ -57,8 +57,8 @@ export default function CheckoutPage() {
     return (
       <main className="p-10">
         <h1 className="text-2xl font-semibold">Оформлення замовлення</h1>
-        <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-6 shadow-sm">
-          <div className="text-sm text-gray-600">Завантаження...</div>
+        <div className="mt-6 border border-white/10 bg-transparent p-6">
+          <div className="text-[10px] uppercase tracking-[3px] text-white/50">Завантаження...</div>
         </div>
       </main>
     );
@@ -68,17 +68,17 @@ export default function CheckoutPage() {
     return (
       <main className="p-10">
         <h1 className="text-2xl font-semibold">Оформлення замовлення</h1>
-        <div className="mt-6 rounded-2xl border border-gray-100 bg-white p-10 text-center shadow-sm">
-          <div className="text-lg font-semibold">Успішно 🎉</div>
-          <div className="mt-2 text-sm text-gray-600">
+        <div className="mt-6 border border-white/10 bg-transparent p-10 text-center">
+          <div className="font-fraktur text-4xl text-white">Успішно 🎉</div>
+          <div className="mt-4 text-[10px] uppercase tracking-[2px] text-white/60 leading-relaxed">
             Твоє замовлення прийнято! Ми зв&apos;яжемося з тобою у Telegram.
           </div>
-          <div className="mt-6 flex justify-center gap-3">
-            <a href="/catalog">
-              <Button variant="secondary" className="cursor-pointer">В каталог</Button>
+          <div className="mt-8 flex justify-center gap-4">
+            <a href="/catalog" className="border border-white/20 text-white/60 hover:text-white hover:border-white px-8 py-3 text-[10px] uppercase tracking-[3px] transition-all">
+              В каталог
             </a>
-            <a href="/">
-              <Button className="cursor-pointer">На головну</Button>
+            <a href="/" className="bg-white text-black px-8 py-3 text-[10px] uppercase tracking-[3px] hover:bg-white/90 transition-all">
+              На головну
             </a>
           </div>
         </div>
@@ -87,34 +87,34 @@ export default function CheckoutPage() {
   }
 
   return (
-    <main className="p-10">
-      <h1 className="text-2xl font-semibold">Оформлення замовлення</h1>
+    <main className="px-6 sm:px-12 md:px-[70px] py-16 min-h-screen">
+      <h1 className="font-fraktur text-4xl md:text-6xl text-white">Оформлення замовлення</h1>
 
       {cart.length === 0 ? (
-        <div className="mt-6 rounded-2xl border border-dashed border-gray-200 bg-white p-10 text-center">
-          <div className="text-sm font-medium">Твій кошик порожній</div>
-          <div className="mt-3">
-            <a className="text-sm text-gray-700 underline" href="/catalog">
+        <div className="mt-10 border border-white/10 p-16 text-center">
+          <div className="font-fraktur text-2xl text-white/40">Твій кошик порожній</div>
+          <div className="mt-6">
+            <a className="border border-white/20 text-white/40 hover:text-white hover:border-white px-8 py-3 text-[10px] uppercase tracking-[3px] transition-all" href="/catalog">
               Перейти до каталогу
             </a>
           </div>
         </div>
       ) : (
-        <div className="mt-6 grid gap-6 lg:grid-cols-3">
-          <div className="lg:col-span-2 rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <div className="text-sm font-medium">Твої дані</div>
+        <div className="mt-12 grid gap-10 lg:grid-cols-3 items-start">
+          <div className="lg:col-span-2 border border-white/10 p-6 sm:p-10">
+            <div className="text-[10px] uppercase tracking-[3px] text-white/50 mb-8">Твої дані</div>
 
-            <div className="mt-4 grid gap-3 sm:grid-cols-2">
-              <div>
-                <div className="text-xs text-gray-600">Ім&apos;я</div>
+            <div className="grid gap-6 sm:grid-cols-2">
+              <div className="flex flex-col gap-2">
+                <div className="text-[10px] uppercase tracking-[2px] text-white/40">Ім&apos;я</div>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Олександр"
                 />
               </div>
-              <div>
-                <div className="text-xs text-gray-600">Телефон</div>
+              <div className="flex flex-col gap-2">
+                <div className="text-[10px] uppercase tracking-[2px] text-white/40">Телефон</div>
                 <Input
                   value={phone}
                   type="tel"
@@ -123,8 +123,8 @@ export default function CheckoutPage() {
                   maxLength={19}
                 />
               </div>
-              <div>
-                <div className="text-xs text-gray-600">Telegram (Нікнейм)</div>
+              <div className="flex flex-col gap-2">
+                <div className="text-[10px] uppercase tracking-[2px] text-white/40">Telegram (Нікнейм)</div>
                 <Input
                   ref={tagRef}
                   value={tag}
@@ -136,43 +136,43 @@ export default function CheckoutPage() {
               </div>
             </div>
 
-            <div className="mt-6 border-t border-gray-100 pt-6">
-              <div className="text-sm font-medium mb-4">Спосіб оплати</div>
-              <div className="space-y-3">
-                <label className="flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all duration-300 hover:border-gray-400">
+            <div className="mt-10 pt-10 border-t border-white/10">
+              <div className="text-[10px] uppercase tracking-[3px] text-white/50 mb-6">Спосіб оплати</div>
+              <div className="flex flex-col gap-4">
+                <label className="flex items-center gap-4 p-5 border transition-all duration-300 cursor-pointer bg-white/[0.02] hover:bg-white/[0.05] border-white/10 hover:border-white/30">
                   <input
                     type="radio"
                     name="paymentMethod"
                     value="mono"
                     checked={paymentMethod === "mono"}
                     onChange={() => setPaymentMethod("mono")}
-                    className="w-4 h-4 text-black focus:ring-black border-gray-300"
+                    className="w-4 h-4 accent-white bg-transparent border-white/20"
                   />
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">💳 Повна оплата онлайн</span>
-                    <span className="text-xs text-gray-500">(Монобанк, Apple/Google Pay, Оплата частинами)</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[11px] uppercase tracking-[1px] text-white">Повна оплата онлайн</span>
+                    <span className="text-[10px] text-white/40 font-light">Монобанк, Apple/Google Pay, Оплата частинами</span>
                   </div>
                 </label>
-                <label className="flex items-center gap-3 p-4 border rounded-xl cursor-pointer transition-all duration-300 hover:border-gray-400">
+                <label className="flex items-center gap-4 p-5 border transition-all duration-300 cursor-pointer bg-white/[0.02] hover:bg-white/[0.05] border-white/10 hover:border-white/30">
                   <input
                     type="radio"
                     name="paymentMethod"
                     value="cod"
                     checked={paymentMethod === "cod"}
                     onChange={() => setPaymentMethod("cod")}
-                    className="w-4 h-4 text-black focus:ring-black border-gray-300"
+                    className="w-4 h-4 accent-white bg-transparent border-white/20"
                   />
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium">📦 Накладений платіж</span>
-                    <span className="text-xs text-gray-500">(Оплата при отриманні на Новій Пошті)</span>
+                  <div className="flex flex-col gap-1">
+                    <span className="text-[11px] uppercase tracking-[1px] text-white">Накладений платіж</span>
+                    <span className="text-[10px] text-white/40 font-light">Оплата при отриманні на Новій Пошті</span>
                   </div>
                 </label>
               </div>
             </div>
 
-            <div className="mt-6">
-              <Button
-                className="w-full cursor-pointer"
+            <div className="mt-10">
+              <button
+                className="w-full border border-white/20 bg-transparent text-white py-4 text-[10px] uppercase tracking-[3px] hover:bg-white/[0.05] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={!canSubmit}
                 onClick={async () => {
                   try {
@@ -208,34 +208,35 @@ export default function CheckoutPage() {
                   }
                 }}
               >
-                {paymentMethod === "mono" ? "Оформити замовлення та оплатити" : "Оформити замовлення"}
-              </Button>
+                {paymentMethod === "mono" ? "Оформити та оплатити" : "Оформити замовлення"}
+              </button>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm">
-            <div className="text-sm font-medium">Ваше замовлення</div>
+          <div className="border border-white/10 p-6 sm:p-10 sticky top-24">
+            <div className="text-[10px] uppercase tracking-[3px] text-white/50 mb-8">Ваше замовлення</div>
 
-            <div className="mt-4 space-y-3">
+            <div className="flex flex-col gap-6">
               {cart.map(({ id, name, price, quantity, size }) => {
                 return (
                   <div
                     key={`${id}-${size}`}
-                    className="flex items-start justify-between gap-3 text-sm"
+                    className="flex items-start justify-between gap-4"
                   >
-                    <div className="text-gray-700">
-                      {name} <span className="text-gray-400">× {quantity}</span>
+                    <div className="text-sm text-white/70 font-light leading-relaxed">
+                      {name} <span className="text-white/30 text-xs ml-1">× {quantity}</span>
+                      {size && size !== 'Не вказано' && <div className="text-[10px] uppercase tracking-[1px] text-white/40 mt-1">Розмір: {size}</div>}
                     </div>
-                    <div className="font-medium">{price * quantity} ₴</div>
+                    <div className="font-fraktur text-lg text-white">{price * quantity} ₴</div>
                   </div>
                 );
               })}
             </div>
 
-            <div className="mt-5 border-t border-gray-100 pt-4">
+            <div className="mt-8 pt-6 border-t border-white/10">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-gray-600">Разом</div>
-                <div className="text-lg font-semibold">{totalPrice} ₴</div>
+                <div className="text-[10px] uppercase tracking-[3px] text-white/50">Разом</div>
+                <div className="font-fraktur text-3xl text-white">{totalPrice} ₴</div>
               </div>
             </div>
           </div>
