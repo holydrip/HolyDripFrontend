@@ -16,7 +16,7 @@ export const ProductService = {
             "categoryId": category->slug.current
         }`;
         try {
-            return await client.fetch(query);
+            return await client.fetch<Product[]>(query);
         } catch (error) {
             console.error("Sanity Fetch Error (Product getAll):", error);
             return [];
@@ -36,7 +36,7 @@ export const ProductService = {
             "categoryId": category->slug.current
         }`;
         try {
-            return await client.fetch(query, { slug });
+            return await client.fetch<Product | null>(query, { slug });
         } catch (error) {
             console.error("Sanity Fetch Error (getProductBySlug):", error);
             return null;
@@ -56,7 +56,7 @@ export const ProductService = {
             "categoryId": category->slug.current
         }`;
         try {
-            return await client.fetch(query, { id });
+            return await client.fetch<Product[]>(query, { id });
         } catch (error) {
             console.error("Sanity Fetch Error (getProductsByCategoryId):", error);
             return [];
