@@ -9,6 +9,7 @@ import { CategoryModule } from './category/category.module';
 import { BotModule } from './bot/bot.module';
 import { OrderModule } from './order/order.module';
 import { PaymentModule } from './payment/payment.module';
+import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
   imports: [
@@ -23,7 +24,11 @@ import { PaymentModule } from './payment/payment.module';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: [`.${process.env.NODE_ENV}.env`, '.env'],
-    })
+    }),
+    ThrottlerModule.forRoot([{
+      ttl: 60000,   // 60 seconds window
+      limit: 30,    // max 30 requests per window per IP
+    }]),
   ],
   providers: [PrismaService], 
 })

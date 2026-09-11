@@ -36,7 +36,7 @@ export class CreateUserDto {
   })
   @IsNotEmpty({ message: 'Password is required' })
   @IsString({ message: 'Password is incorrect' })
-  @MinLength(3, { message: 'Password is too short' })
+  @MinLength(6, { message: 'Password is too short' })
   @MaxLength(50, { message: 'Password is too long' })
   password: string;
 }

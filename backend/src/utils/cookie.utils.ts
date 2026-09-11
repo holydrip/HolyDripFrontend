@@ -16,9 +16,12 @@ export class CookieUtils {
     token: string,
     options?: CookieOptions,
   ) {
+    const isProduction = process.env.NODE_ENV === 'production';
     res.cookie(`${tokenName}_token`, token, {
       httpOnly: true,
-      secure: false,
+      secure: isProduction,
+      sameSite: isProduction ? 'none' : 'lax',
+      path: '/',
       ...options,
     });
   }

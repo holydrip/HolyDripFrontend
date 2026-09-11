@@ -16,12 +16,15 @@ import { UserWithRefreshToken } from '../../security/jwt/refresh/refresh.strateg
 import { TransformInterceptor } from '../../interceptors/transform.interceptor';
 import { UserDto } from '../user/dto/user.dto';
 import { CreateUserDto } from '../user/dto/create-user.dto';
+import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 
 @Controller('auth')
+@UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @UseInterceptors(new TransformInterceptor(UserDto))
   async register(
     @Body() body: CreateUserDto,
@@ -42,6 +45,7 @@ export class AuthController {
   }
 
   @Post('/login')
+  @Throttle({ default: { ttl: 60000, limit: 5 } })
   @UseInterceptors(new TransformInterceptor(UserDto))
   async login(
     @Body() body: LoginDto,
