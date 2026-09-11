@@ -44,19 +44,16 @@ async function bootstrap() {
   const port = process.env.PORT ?? 8800;
   console.log('Starting on port:', port);
 
-  // Only expose Swagger in development
-  if (process.env.NODE_ENV !== 'production') {
-    const config = new DocumentBuilder()
-      .setTitle('Holy-drip eCommerce shop API')
-      .setDescription(
-        'API for managing products, orders, users, and authentication',
-      )
-      .setVersion('1.0')
-      .build();
+  const config = new DocumentBuilder()
+    .setTitle('Holy-drip eCommerce shop API')
+    .setDescription(
+      'API for managing products, orders, users, and authentication',
+    )
+    .setVersion('1.0')
+    .build();
 
-    const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('swagger/api', app, document);
-  }
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('swagger/api', app, document);
 
   await app.listen(process.env.PORT ?? 8800, '0.0.0.0');
 }

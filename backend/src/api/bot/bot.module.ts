@@ -30,22 +30,33 @@ export class BotModule implements OnModuleInit {
   constructor(@InjectBot() private readonly bot: Telegraf) {}
 
   async onModuleInit() {
-    const maxRetries = 5;
-    for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    // Start the bot asynchronously so it doesn't block NestJS startup
+    this.startBotWithRetry();
+  }
+
+  private async startBotWithRetry() {
+    let isRunning = false;
+
+    const launchBot = async () => {
       try {
         await this.bot.telegram.deleteWebhook({ drop_pending_updates: true });
-        this.bot.launch({ dropPendingUpdates: true });
-        this.logger.log('Telegram bot launched successfully');
-        return;
+        
+        this.logger.log('Attempting to launch Telegram bot...');
+        // bot.launch() resolves only when the bot stops or crashes
+        await this.bot.launch({ dropPendingUpdates: true });
+        
+        this.logger.warn('Telegram bot stopped gracefully.');
       } catch (error: any) {
-        this.logger.warn(`Bot launch attempt ${attempt}/${maxRetries} failed: ${error.message}`);
-        if (attempt < maxRetries) {
-          // Wait before retrying (exponential backoff)
-          await new Promise(r => setTimeout(r, attempt * 3000));
-        } else {
-          this.logger.error('Failed to launch Telegram bot after all retries. Server will continue without bot polling.');
-        }
+        this.logger.error(`Telegram bot crashed: ${error.message}`);
+        
+        // Wait 5 seconds before trying again to avoid spamming Telegram API
+        await new Promise(resolve => setTimeout(resolve, 5000));
+        
+        // Retry launch
+        launchBot();
       }
-    }
+    };
+
+    launchBot();
   }
 }
