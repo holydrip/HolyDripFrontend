@@ -54,7 +54,7 @@ export class OrderService {
             <b>Товары:</b>
             ${dto.items.map(i => `- ${i.name} (${i.size}) x${i.quantity}`).join('\n') || 'Пусто'}
             <b>Сумма:</b> ${dto.totalPrice} UAH
-            <b>Оплата:</b> Ожидает (Mono Pay)
+            <b>Оплата:</b> Ожидает (WayForPay)
             <b>ID Заказа:</b> <code>${order.id}</code>
         `;
 
