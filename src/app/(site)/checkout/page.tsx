@@ -16,6 +16,7 @@ export default function CheckoutPage() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [tag, setTag] = useState("@");
+  const [address, setAddress] = useState("");
   const [success, setSuccess] = useState(false);
   
   const tagRef = useRef<HTMLInputElement>(null);
@@ -48,9 +49,10 @@ export default function CheckoutPage() {
     return (
       cart.length > 0 && 
       name.trim().length >= 2 && 
-      digitsOnly.length === 12
+      digitsOnly.length === 12 &&
+      address.trim().length >= 5
     );
-  }, [cart.length, name, phone]);
+  }, [cart.length, name, phone, address]);
 
   if (!mounted) {
     return (
@@ -133,6 +135,14 @@ export default function CheckoutPage() {
                   placeholder="@username"
                 />
               </div>
+              <div className="flex flex-col gap-2 sm:col-span-2">
+                <div className="text-[10px] uppercase tracking-[2px] text-white/40">Місто та відділення НП</div>
+                <Input
+                  value={address}
+                  onChange={(e) => setAddress(e.target.value)}
+                  placeholder="м. Київ, Відділення №1"
+                />
+              </div>
             </div>
 
             <div className="mt-10">
@@ -148,6 +158,7 @@ export default function CheckoutPage() {
                         name,
                         phone,
                         telegram: tag,
+                        address,
                         items: cart.map(item => ({
                           productId: item.id,
                           name: item.name,
