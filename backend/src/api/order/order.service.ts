@@ -44,24 +44,9 @@ export class OrderService {
             this.logger.error('Failed to create payment invoice', e);
         }
 
-        // 3. Send Telegram Notification
-        const message = `
-            <b>НОВЫЙ ЗАКАЗ В HOLY DRIP</b>
-            <b>Имя:</b> ${dto.name}
-            <b>Телефон:</b> <code>${dto.phone}</code>
-            <b>Телеграм:</b> <code>${dto.telegram}</code>
-            <b>Адреса:</b> ${dto.address || 'Не вказана'}
-            <b>Товары:</b>
-            ${dto.items.map(i => `- ${i.name} (${i.size}) x${i.quantity}`).join('\n') || 'Пусто'}
-            <b>Сумма:</b> ${dto.totalPrice} UAH
-            <b>Оплата:</b> Ожидает (WayForPay)
-            <b>ID Заказа:</b> <code>${order.id}</code>
-        `;
-
-        // Find the first image of the first product to send
-        const firstProductImage = dto.items[0]?.image;
-
-        this.botService.sendMessage(message, firstProductImage);
+        // We intentionally do NOT send a Telegram notification here anymore.
+        // It will be sent via the WayForPay webhook ONLY when the payment is successful (status === 'Approved').
+        // This prevents spam from abandoned carts.
 
         return { 
             success: true, 
