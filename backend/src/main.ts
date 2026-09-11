@@ -17,6 +17,8 @@ async function bootstrap() {
     process.env.FRONTEND_URL,
     'http://localhost:3000',
     'http://localhost:3001',
+    'https://holydrip.com.ua',
+    'https://www.holydrip.com.ua'
   ].filter(Boolean);
 
   app.enableCors({
