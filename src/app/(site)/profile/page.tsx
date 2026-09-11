@@ -71,51 +71,15 @@ export default function ProfilePage() {
       setLoading(false);
     })
     .catch(() => {
-      // Mock data if backend fails
-      const mockData = {
-        id: "user-123",
-        name: "Аліма",
-        email: "holy.founder@holydrip.com",
-        phone: "+38 099 666 99 99",
-        address: "м. Київ, Нова Пошта №42",
-        avatarUrl: null,
-        discount: { percent: 10 },
-        totalSpent: 16500,
-        orders: [
-          {
-            id: "order-12345678-abc",
-            createdAt: new Date().toISOString(),
-            totalPrice: "4500",
-            status: "PAID",
-            items: [
-              { name: "Balenciaga Defender", size: "43", quantity: 1 }
-            ]
-          }
-        ]
-      };
-      setProfile(mockData);
-      let parsedAddressMock = { city: "", post: "", zip: "" };
-      if (mockData.address) {
-          const parts = mockData.address.split(",");
-          parsedAddressMock.city = parts[0]?.trim() || "";
-          parsedAddressMock.post = parts[1]?.trim() || "";
-      }
-      setEditForm({
-          name: mockData.name,
-          email: mockData.email,
-          phone: mockData.phone,
-          city: parsedAddressMock.city,
-          post: parsedAddressMock.post,
-          zip: parsedAddressMock.zip,
-          avatarUrl: mockData.avatarUrl || ""
-      });
-      setLoading(false);
+      // Not authenticated — redirect to login
+      router.push('/login');
     });
   };
 
   useEffect(() => {
     fetchProfile();
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -243,7 +207,16 @@ export default function ProfilePage() {
             </h1>
         </div>
         <button 
-          onClick={() => {/* logout logic */}}
+          onClick={async () => {
+            try {
+              await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/auth/logout`, {
+                method: 'POST',
+                credentials: 'include'
+              });
+            } catch(e) {}
+            router.push('/');
+            router.refresh();
+          }}
           className="flex items-center gap-2 text-white/40 hover:text-white transition-colors text-[10px] uppercase tracking-[4px] pb-2 group"
         >
           <span className="hidden sm:block">Вийти</span> 
