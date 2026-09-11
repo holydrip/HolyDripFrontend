@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsNotEmpty,
+  IsOptional,
   IsPhoneNumber,
   IsString,
   MaxLength,
@@ -21,8 +22,8 @@ export class CreateUserDto {
   @ApiProperty({
     description: 'Phone number of the user',
   })
+  @IsOptional()
   @IsPhoneNumber('UA', { message: 'Phone number is incorrect' })
-  
   phone?: string;
   @ApiProperty({
     description: 'Email of the user',
