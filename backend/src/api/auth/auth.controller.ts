@@ -25,7 +25,6 @@ export class AuthController {
 
   @Post('/register')
   @Throttle({ default: { ttl: 60000, limit: 5 } })
-  @UseInterceptors(new TransformInterceptor(UserDto))
   async register(
     @Body() body: CreateUserDto,
     @Res({ passthrough: true }) res: Response,
@@ -41,16 +40,17 @@ export class AuthController {
         refreshTokenExpires: this.authService.getTokenExpTime(refreshToken),
       },
     );
-    return newUser;
+
+    const { password, ...safeUser } = newUser as any;
+    return { ...safeUser, accessToken, refreshToken };
   }
 
   @Post('/login')
   @Throttle({ default: { ttl: 60000, limit: 5 } })
-  @UseInterceptors(new TransformInterceptor(UserDto))
   async login(
     @Body() body: LoginDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<UserDto> {
+  ) {
     const { accessToken, refreshToken, user } =
       await this.authService.login(body);
     CookieUtils.setResponseJwt(
@@ -61,7 +61,9 @@ export class AuthController {
         refreshTokenExpires: this.authService.getTokenExpTime(refreshToken),
       },
     );
-    return user;
+
+    const { password, ...safeUser } = user as any;
+    return { ...safeUser, accessToken, refreshToken };
   }
 
   @UseGuards(RefreshGuard)
