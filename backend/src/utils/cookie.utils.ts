@@ -7,6 +7,13 @@ export class CookieUtils {
         const cookies = req.cookies;
         return cookies?.[`${token}_token`];
       },
+      (req: Request) => {
+        const authHeader = req.headers?.authorization;
+        if (authHeader && authHeader.startsWith('Bearer ')) {
+          return authHeader.split(' ')[1];
+        }
+        return null;
+      },
     ];
   }
 

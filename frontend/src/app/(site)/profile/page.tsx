@@ -34,7 +34,7 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const fetchProfile = () => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/user/me`, {
+    fetch(`/api/proxy/user/me`, {
       credentials: 'include' 
     })
     .then(res => {
@@ -104,7 +104,7 @@ export default function ProfilePage() {
       setSaving(true);
       try {
           // Send PUT request to save user data
-          const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/user/${profile.id}`, {
+          const res = await fetch(`/api/proxy/user/${profile.id}`, {
               method: 'PUT',
               headers: {
                   'Content-Type': 'application/json',
@@ -209,7 +209,7 @@ export default function ProfilePage() {
         <button 
           onClick={async () => {
             try {
-              await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/auth/logout`, {
+              await fetch(`/api/proxy/auth/logout`, {
                 method: 'POST',
                 credentials: 'include'
               });

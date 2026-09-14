@@ -26,8 +26,8 @@ export default function LoginPage() {
     setError("");
 
     const url = isLogin 
-      ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/auth/login`
-      : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/auth/register`;
+      ? `/api/proxy/auth/login`
+      : `/api/proxy/auth/register`;
 
     const body = isLogin ? { email, password } : { name, email, password };
 
