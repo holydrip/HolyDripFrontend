@@ -33,9 +33,22 @@ export default function ProfilePage() {
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  const API = process.env.NEXT_PUBLIC_API_URL || 'https://holydripbackend-production.up.railway.app';
+
+  const getAuthHeaders = (): HeadersInit => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('accessToken') : null;
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+  };
+
   const fetchProfile = () => {
-    fetch(`/api/proxy/user/me`, {
-      credentials: 'include' 
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+      router.push('/login');
+      return;
+    }
+
+    fetch(`${API}/user/me`, {
+      headers: { 'Authorization': `Bearer ${token}` }
     })
     .then(res => {
       if (!res.ok) throw new Error('Unauthorized');
@@ -71,7 +84,8 @@ export default function ProfilePage() {
       setLoading(false);
     })
     .catch(() => {
-      // Not authenticated — redirect to login
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
       router.push('/login');
     });
   };
@@ -104,12 +118,12 @@ export default function ProfilePage() {
       setSaving(true);
       try {
           // Send PUT request to save user data
-          const res = await fetch(`/api/proxy/user/${profile.id}`, {
+          const res = await fetch(`${API}/user/${profile.id}`, {
               method: 'PUT',
               headers: {
-                  'Content-Type': 'application/json',
+                   'Content-Type': 'application/json',
+                   ...getAuthHeaders(),
               },
-              credentials: 'include',
               body: JSON.stringify({
                   name: editForm.name,
                   email: editForm.email,
@@ -209,11 +223,13 @@ export default function ProfilePage() {
         <button 
           onClick={async () => {
             try {
-              await fetch(`/api/proxy/auth/logout`, {
+              await fetch(`${API}/auth/logout`, {
                 method: 'POST',
-                credentials: 'include'
+                headers: getAuthHeaders(),
               });
             } catch(e) {}
+            localStorage.removeItem('accessToken');
+            localStorage.removeItem('refreshToken');
             router.push('/');
             router.refresh();
           }}

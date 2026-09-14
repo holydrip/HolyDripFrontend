@@ -25,9 +25,10 @@ export default function LoginPage() {
     setLoading(true);
     setError("");
 
+    const API = process.env.NEXT_PUBLIC_API_URL || 'https://holydripbackend-production.up.railway.app';
     const url = isLogin 
-      ? `/api/proxy/auth/login`
-      : `/api/proxy/auth/register`;
+      ? `${API}/auth/login`
+      : `${API}/auth/register`;
 
     const body = isLogin ? { email, password } : { name, email, password };
 
@@ -36,15 +37,22 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-        credentials: "include"
       });
 
+      const data = await res.json();
+
       if (!res.ok) {
-        const data = await res.json();
         throw new Error(data.message || "Сталася помилка");
       }
 
-      // Backend sets the HttpOnly 'access' cookie automatically.
+      // Save token to localStorage
+      if (data.accessToken) {
+        localStorage.setItem('accessToken', data.accessToken);
+      }
+      if (data.refreshToken) {
+        localStorage.setItem('refreshToken', data.refreshToken);
+      }
+
       router.push("/profile");
       router.refresh();
     } catch (err: any) {
