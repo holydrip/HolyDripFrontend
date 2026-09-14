@@ -31,6 +31,7 @@ export class PrismaExceptionFilter implements ExceptionFilter {
         break;
       default:
         console.error('Unhandled Prisma Error:', exception);
+        message = `Database error (${exception.code})`;
     }
 
     response.status(statusCode).json({
