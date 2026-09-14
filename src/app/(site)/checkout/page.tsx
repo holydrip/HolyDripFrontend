@@ -151,7 +151,7 @@ export default function CheckoutPage() {
                 disabled={!canSubmit}
                 onClick={async () => {
                   try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/order`, {
+                    const res = await fetch(`/api/proxy/order`, {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
