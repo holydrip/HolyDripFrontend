@@ -9,7 +9,7 @@ export const ProductService = {
             "name": title,
             "slug": slug.current,
             price,
-            "images": coalesce(images[].secure_url, images[].asset->url),
+            "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
             sizes,
             description,
             "measurements": measurements[]{ size, details },
@@ -29,7 +29,7 @@ export const ProductService = {
             "name": title,
             "slug": slug.current,
             price,
-            "images": coalesce(images[].secure_url, images[].asset->url),
+            "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
             sizes,
             description,
             "measurements": measurements[]{ size, details },
@@ -49,7 +49,7 @@ export const ProductService = {
             "name": title,
             "slug": slug.current,
             price,
-            "images": coalesce(images[].secure_url, images[].asset->url),
+            "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
             sizes,
             description,
             "measurements": measurements[]{ size, details },
@@ -71,7 +71,7 @@ export const ProductService = {
             "name": title,
             "slug": slug.current,
             price,
-            "images": coalesce(images[].secure_url, images[].asset->url),
+            "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
             sizes,
             "categoryId": category->slug.current
         }
@@ -94,7 +94,7 @@ export const ProductService = {
                 "name": title,
                 "slug": slug.current,
                 price,
-                "images": coalesce(images[].secure_url, images[].asset->url),
+                "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
                 sizes,
                 "categoryId": category->slug.current
             }
@@ -118,7 +118,7 @@ export const ProductService = {
                 "name": title,
                 "slug": slug.current,
                 price,
-                "images": coalesce(images[].secure_url, images[].asset->url),
+                "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
                 sizes,
                 "categoryId": category->slug.current
             }
