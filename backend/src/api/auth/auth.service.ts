@@ -70,20 +70,7 @@ export class AuthService {
       role: user.role,
     };
 
-    let ttl = '30d';
-    const envTtl = this.configService.get<string>(
-      token === 'access' ? 'ACCESS_TTL' : 'REFRESH_TTL',
-    );
-
-    if (
-      envTtl &&
-      typeof envTtl === 'string' &&
-      envTtl.trim() !== '' &&
-      !envTtl.startsWith('0') &&
-      envTtl !== 'undefined'
-    ) {
-      ttl = envTtl.trim();
-    }
+    const ttl = '30d';
 
     return this.jwtService.sign(payload, {
       expiresIn: ttl as StringValue,
