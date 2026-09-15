@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import { Product } from "@/lib/types";
 import { ProductGrid } from "@/components/product/ProductGrid";
@@ -8,35 +9,54 @@ import { FiltersBar, Filters } from "@/components/catalog/FiltersBar";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { CategoryService } from "@/services/category.service";
 
-
 interface Props {
-  params: Promise<{ id: string }>;
+  params?: Promise<{ id: string }>;
 }
 
-
-
 export default function CatalogPage({ params }: Props) {
+  const routeParams = useParams();
   const [filters, setFilters] = useState<Filters>({ min: 0, max: 30000, sort: "relevance" });
   const [allItems, setAllItems] = useState<Product[]>([]);
+  const [categoryName, setCategoryName] = useState<string>("");
   const [initialLoading, setInitialLoading] = useState(true);
   
   useEffect(() => {
     async function fetchProducts() {
-      const { id } = await params;
+      let id = "";
+      if (routeParams?.id) {
+        id = Array.isArray(routeParams.id) ? routeParams.id[0] : routeParams.id;
+      } else if (params) {
+        try {
+          const p = await params;
+          id = p.id;
+        } catch {}
+      }
+      
+      if (!id) {
+        setInitialLoading(false);
+        return;
+      }
+
+      const decodedId = decodeURIComponent(id);
       
       try {
-        const data = await CategoryService.getCategoryById(id);
-        if (data && data.products) {
-          setAllItems(data.products);
+        const data = await CategoryService.getCategoryById(decodedId);
+        if (data) {
+          setCategoryName(data.name || decodedId);
+          if (data.products) {
+            setAllItems(data.products);
+          }
+        } else {
+          setCategoryName(decodedId);
         }
       } catch (error) {
-        console.error("Помилка завантаження товарів:", error);
+        console.error("Помилка завантаження товарів категорії:", error);
       } finally {
         setInitialLoading(false);
       }
     }
     fetchProducts();
-  }, [params]);
+  }, [routeParams, params]);
 
   const filteredItems = useMemo(() => {
     let result = [...allItems];
@@ -76,7 +96,7 @@ export default function CatalogPage({ params }: Props) {
         <div className="flex flex-col gap-2">
           <span className="text-white/25 text-[10px] uppercase tracking-[5px] font-light">Каталог</span>
           <h1 className={`font-fraktur text-white text-6xl md:text-8xl lg:text-[110px] leading-none font-fraktur`}>
-            Collection
+            {categoryName || "Collection"}
           </h1>
         </div>
       </motion.div>

@@ -44,7 +44,13 @@ export const ProductService = {
     },
 
     async getProductsByCategoryId(id: string) {
-        const query = `*[_type == "product" && references($id)]{
+        const query = `*[_type == "product" && (
+            category._ref == $id || 
+            references($id) || 
+            category->slug.current == $id || 
+            lower(category->title) == lower($id) || 
+            lower(title) match lower($id)
+        )]{
             "id": _id,
             "name": title,
             "slug": slug.current,

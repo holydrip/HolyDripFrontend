@@ -32,7 +32,7 @@ export default function Header() {
           const nameLower = c.name.toLowerCase();
           return !nameLower.includes("ua brands") && !nameLower.includes("in ua");
         })
-        .map(c => ({ label: c.name, href: `/catalog/${c.id}` })) || []
+        .map(c => ({ label: c.name, href: `/catalog/${c.slug || c.id}` })) || []
     },
     { label: t("about_us"), href: "/about" },
   ];
