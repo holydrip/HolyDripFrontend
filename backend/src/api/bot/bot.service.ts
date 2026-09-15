@@ -20,10 +20,11 @@ export class BotService {
         return {
             inline_keyboard: [
                 [
-                    { text: currentStatus === 'CONFIRMED' ? '• Підтверджено •' : '✅ Підтвердити', callback_data: `status:${orderId}:CONFIRMED` },
-                    { text: currentStatus === 'SHIPPED' ? '• Відправлено •' : '🚚 Відправлено', callback_data: `status:${orderId}:SHIPPED` }
+                    { text: currentStatus === 'PAID' ? '• Оплачено •' : '💳 Оплачено', callback_data: `status:${orderId}:PAID` },
+                    { text: currentStatus === 'CONFIRMED' ? '• Підтверджено •' : '✅ Підтвердити', callback_data: `status:${orderId}:CONFIRMED` }
                 ],
                 [
+                    { text: currentStatus === 'SHIPPED' ? '• Відправлено •' : '🚚 Відправлено', callback_data: `status:${orderId}:SHIPPED` },
                     { text: currentStatus === 'FAILED' ? '• Скасовано •' : '❌ Скасувати', callback_data: `status:${orderId}:FAILED` }
                 ]
             ]

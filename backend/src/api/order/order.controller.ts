@@ -16,6 +16,11 @@ export class OrderController {
     return this.orderService.getAllOrders();
   }
 
+  @Get(':id')
+  getById(@Param('id') id: string) {
+    return this.orderService.getOrderById(id);
+  }
+
   @Patch(':id/status')
   updateStatus(
     @Param('id') id: string,

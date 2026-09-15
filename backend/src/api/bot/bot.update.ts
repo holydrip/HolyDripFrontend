@@ -232,10 +232,11 @@ export class BotUpdate {
       const keyboard = {
         inline_keyboard: [
           [
-            { text: newStatus === 'CONFIRMED' ? '• Підтверджено •' : '✅ Підтвердити', callback_data: `status:${orderId}:CONFIRMED` },
-            { text: newStatus === 'SHIPPED' ? '• Відправлено •' : '🚚 Відправлено', callback_data: `status:${orderId}:SHIPPED` }
+            { text: newStatus === 'PAID' ? '• Оплачено •' : '💳 Оплачено', callback_data: `status:${orderId}:PAID` },
+            { text: newStatus === 'CONFIRMED' ? '• Підтверджено •' : '✅ Підтвердити', callback_data: `status:${orderId}:CONFIRMED` }
           ],
           [
+            { text: newStatus === 'SHIPPED' ? '• Відправлено •' : '🚚 Відправлено', callback_data: `status:${orderId}:SHIPPED` },
             { text: newStatus === 'FAILED' ? '• Скасовано •' : '❌ Скасувати', callback_data: `status:${orderId}:FAILED` }
           ]
         ]

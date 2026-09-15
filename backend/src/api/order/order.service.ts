@@ -139,6 +139,28 @@ ${itemsList || 'Пусто'}
         });
     }
 
+    async getOrderById(id: string) {
+        const order = await this.prisma.order.findUnique({
+            where: { id },
+            include: {
+                items: {
+                    include: { product: true }
+                },
+                user: {
+                    select: {
+                        name: true,
+                        email: true,
+                        phone: true,
+                    }
+                }
+            }
+        });
+        if (!order) {
+            throw new NotFoundException(`Order with id ${id} not found`);
+        }
+        return order;
+    }
+
     async updateOrderStatus(id: string, status: any) {
         const order = await this.prisma.order.findUnique({ where: { id } });
         if (!order) {
