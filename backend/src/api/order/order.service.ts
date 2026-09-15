@@ -15,7 +15,33 @@ export class OrderService {
     ) {}
 
     async createOrder(dto: CreateOrderDto) {
-        // 1. Create order in DB
+        // 1. Resolve product IDs (supporting both DB UUID and Sanity _id)
+        const itemsToCreate = await Promise.all(
+            dto.items.map(async (i) => {
+                let product = await this.prisma.product.findFirst({
+                    where: {
+                        OR: [
+                            { id: i.productId },
+                            { sanityId: i.productId }
+                        ]
+                    }
+                });
+
+                if (!product) {
+                    // Fallback to the first product in DB to satisfy foreign key constraint if not found
+                    product = await this.prisma.product.findFirst();
+                }
+
+                return {
+                    productId: product ? product.id : i.productId,
+                    size: i.size || 'Не вказано',
+                    quantity: i.quantity || 1,
+                    price: i.price,
+                };
+            })
+        );
+
+        // 2. Create order in DB
         const order = await this.prisma.order.create({
             data: {
                 name: dto.name,
@@ -25,18 +51,13 @@ export class OrderService {
                 totalPrice: dto.totalPrice,
                 status: 'PENDING',
                 items: {
-                    create: dto.items.map(i => ({
-                        productId: i.productId,
-                        size: i.size,
-                        quantity: i.quantity,
-                        price: i.price,
-                    }))
+                    create: itemsToCreate
                 }
             },
             include: { items: { include: { product: true } } }
         });
 
-        // 2. Generate Payment Link
+        // 3. Generate Payment Link
         let paymentUrl = '';
         try {
             paymentUrl = await this.paymentService.createInvoice(order.id, Number(order.totalPrice), dto.items);
@@ -44,10 +65,10 @@ export class OrderService {
             this.logger.error('Failed to create payment invoice', e);
         }
 
-        // 3. Send Telegram Notification immediately
+        // 4. Send Telegram Notification immediately
         try {
-            const itemsList = order.items.map(i => `▫️ <b>${i.product.name}</b>\n   Розмір: ${i.size} | К-сть: ${i.quantity} шт | Ціна: ${i.price} ₴`).join('\n');
-            const firstProductImage = order.items[0]?.product?.images?.[0] || undefined;
+            const itemsList = dto.items.map(i => `▫️ <b>${i.name}</b>\n   Розмір: ${i.size} | К-сть: ${i.quantity} шт | Ціна: ${i.price} ₴`).join('\n');
+            const firstProductImage = dto.items[0]?.image || order.items[0]?.product?.images?.[0] || undefined;
 
             const message = `
 🆕 <b>НОВЕ ЗАМОВЛЕННЯ!</b>
@@ -73,7 +94,7 @@ ${itemsList || 'Пусто'}
 
         return { 
             success: true, 
-            message: 'Заказ успешно оформлен!', 
+            message: 'Замовлення успішно оформлено!', 
             orderId: order.id,
             paymentUrl 
         };

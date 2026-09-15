@@ -23,22 +23,25 @@ export class OrderItemDto {
     quantity: number;
 
     @IsString()
+    @IsOptional()
     image?: string;
 }
+
 export class CreateOrderDto {
     @IsString()
-    @IsNotEmpty({ message: 'Имя не может быть пустым' })
+    @IsNotEmpty({ message: 'Імʼя не може бути пустим' })
     name: string;
 
     @IsString()
-    @IsNotEmpty({ message: 'Телефон обязателен' })
+    @IsNotEmpty({ message: 'Телефон обовʼязковий' })
     phone: string;
 
     @IsString()
-    @IsNotEmpty({ message: 'Телеграм не может быть пустым' })
+    @IsNotEmpty({ message: 'Telegram не може бути пустим' })
     telegram: string;
 
     @IsString()
+    @IsOptional()
     address?: string;
 
     @IsArray()

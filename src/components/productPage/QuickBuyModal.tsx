@@ -31,7 +31,7 @@ export function QuickBuyModal({ isOpen, onClose, product, size }: Props) {
     setLoading(true);
     
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/order`, {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://holydripbackend-production.up.railway.app'}/order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -45,18 +45,24 @@ export function QuickBuyModal({ isOpen, onClose, product, size }: Props) {
             size: size,
             quantity: 1,
             price: product.price,
-            image: product.images[0]
+            image: product.images?.[0] || ''
           }],
           totalPrice: product.price
         })
       });
       
       const data = await res.json();
+      if (!res.ok) {
+        alert(data.message || 'Помилка при створенні замовлення');
+        setLoading(false);
+        return;
+      }
       if (data.paymentUrl) {
         window.location.href = data.paymentUrl;
       }
     } catch(e) {
       console.error(e);
+      alert('Помилка зʼєднання з сервером');
       setLoading(false);
     }
   };

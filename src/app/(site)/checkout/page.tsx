@@ -18,6 +18,7 @@ export default function CheckoutPage() {
   const [tag, setTag] = useState("@");
   const [address, setAddress] = useState("");
   const [success, setSuccess] = useState(false);
+  const [loading, setLoading] = useState(false);
   
   const tagRef = useRef<HTMLInputElement>(null);
   const prefix = "@";
@@ -148,8 +149,10 @@ export default function CheckoutPage() {
             <div className="mt-10">
               <button
                 className="w-full border border-white/20 bg-transparent text-white py-4 text-[10px] uppercase tracking-[3px] hover:bg-white/[0.05] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={!canSubmit}
+                disabled={!canSubmit || loading}
                 onClick={async () => {
+                  if (loading) return;
+                  setLoading(true);
                   try {
                     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://holydripbackend-production.up.railway.app'}/order`, {
                       method: 'POST',
@@ -164,7 +167,8 @@ export default function CheckoutPage() {
                           name: item.name,
                           size: (item as { size?: string }).size || 'Не вказано',
                           quantity: item.quantity,
-                          price: item.price
+                          price: item.price,
+                          image: item.images?.[0] || ''
                         })), 
                         totalPrice
                       })
@@ -172,6 +176,13 @@ export default function CheckoutPage() {
                     
                     const data = await res.json();
                     
+                    if (!res.ok) {
+                      const errorMsg = Array.isArray(data.message) ? data.message.join(', ') : (data.message || 'Помилка при створенні замовлення');
+                      alert(errorMsg);
+                      setLoading(false);
+                      return;
+                    }
+
                     if (data.paymentUrl) {
                       window.location.href = data.paymentUrl;
                     } else {
@@ -180,10 +191,13 @@ export default function CheckoutPage() {
                     }
                   } catch(e) {
                     console.error('Order Error:', e);
+                    alert('Помилка зʼєднання з сервером');
+                  } finally {
+                    setLoading(false);
                   }
                 }}
               >
-                Оформити замовлення та оплатити
+                {loading ? 'ОБРОБКА...' : 'Оформити замовлення та оплатити'}
               </button>
             </div>
           </div>
