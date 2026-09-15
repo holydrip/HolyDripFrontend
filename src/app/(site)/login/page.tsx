@@ -89,10 +89,10 @@ export default function LoginPage() {
         <form onSubmit={handleSubmit} className="flex flex-col gap-5 p-8 bg-white/[0.02] border border-white/[0.07]">
           {!isLogin && (
             <div>
-              <label className="text-[10px] uppercase tracking-[3px] text-white/40 mb-2 block">{t("name")}</label>
+              <label className="text-[10px] uppercase tracking-[3px] text-white/40 mb-2 block">ПІБ (Прізвище, Ім&apos;я, По батькові)</label>
               <input 
                 value={name} onChange={e => setName(e.target.value)} 
-                placeholder="Олександр" required={!isLogin}
+                placeholder="Шевченко Тарас Григорович" required={!isLogin}
                 className="w-full bg-transparent border-b border-white/20 text-white placeholder:text-white/20 px-0 py-3 outline-none focus:border-white transition-colors text-lg font-light"
               />
             </div>

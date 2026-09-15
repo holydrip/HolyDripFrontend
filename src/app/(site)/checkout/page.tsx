@@ -79,9 +79,11 @@ export default function CheckoutPage() {
 
   const canSubmit = useMemo(() => {
     const digitsOnly = phone.replace(/\D/g, "");
+    const nameWords = name.trim().split(/\s+/).filter(Boolean);
     return (
       cart.length > 0 && 
-      name.trim().length >= 2 && 
+      nameWords.length >= 2 && 
+      name.trim().length >= 5 &&
       digitsOnly.length === 12 &&
       address.trim().length >= 5
     );
@@ -140,15 +142,20 @@ export default function CheckoutPage() {
 
             <div className="grid gap-6 sm:grid-cols-2">
               <div className="flex flex-col gap-2">
-                <div className="text-[10px] uppercase tracking-[2px] text-white/40">Ім&apos;я</div>
+                <div className="text-[10px] uppercase tracking-[2px] text-white/40">
+                  ПІБ (Прізвище, Ім&apos;я, По батькові) *
+                </div>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  placeholder="Олександр"
+                  placeholder="Шевченко Тарас Григорович"
                 />
+                {name.trim().length > 0 && name.trim().split(/\s+/).filter(Boolean).length < 2 && (
+                  <span className="text-red-400 text-[10px]">Вкажіть щонайменше прізвище та ім&apos;я</span>
+                )}
               </div>
               <div className="flex flex-col gap-2">
-                <div className="text-[10px] uppercase tracking-[2px] text-white/40">Телефон</div>
+                <div className="text-[10px] uppercase tracking-[2px] text-white/40">Телефон *</div>
                 <Input
                   value={phone}
                   type="tel"
@@ -156,6 +163,9 @@ export default function CheckoutPage() {
                   placeholder="+38 (099) 000-00-00"
                   maxLength={19}
                 />
+                {phone.length > 0 && phone.replace(/\D/g, "").length !== 12 && (
+                  <span className="text-red-400 text-[10px]">Введіть повний номер (+38 0XX ...)</span>
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <div className="text-[10px] uppercase tracking-[2px] text-white/40">Telegram (Нікнейм)</div>
@@ -214,6 +224,19 @@ export default function CheckoutPage() {
                       alert(errorMsg);
                       setLoading(false);
                       return;
+                    }
+
+                    const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+                    if (token && userId) {
+                      const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://holydripbackend-production.up.railway.app";
+                      fetch(`${apiUrl}/user/${userId}`, {
+                        method: "PUT",
+                        headers: {
+                          "Content-Type": "application/json",
+                          Authorization: `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ name, phone, address })
+                      }).catch(() => {});
                     }
 
                     if (data.paymentUrl) {

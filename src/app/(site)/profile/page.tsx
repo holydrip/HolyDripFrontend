@@ -270,13 +270,25 @@ export default function ProfilePage() {
                             <div className="flex items-center gap-4">
                                 <button onClick={() => {
                                     setIsEditing(false);
+                                    let parsedCancel = { city: "", post: "", zip: "" };
+                                    if (profile?.address) {
+                                      try {
+                                        if (profile.address.startsWith("{")) {
+                                          parsedCancel = JSON.parse(profile.address);
+                                        } else {
+                                          const parts = profile.address.split(",");
+                                          parsedCancel.city = parts[0]?.trim() || "";
+                                          parsedCancel.post = parts[1]?.trim() || "";
+                                        }
+                                      } catch {}
+                                    }
                                     setEditForm({
                                         name: profile.name || "",
                                         email: profile.email || "",
                                         phone: profile.phone || "",
-                                        city: JSON.parse(profile.address || "{}").city || "",
-                                        post: JSON.parse(profile.address || "{}").post || "",
-                                        zip: JSON.parse(profile.address || "{}").zip || "",
+                                        city: parsedCancel.city,
+                                        post: parsedCancel.post,
+                                        zip: parsedCancel.zip,
                                         avatarUrl: profile.avatarUrl || ""
                                     });
                                 }} className="text-[9px] uppercase tracking-widest text-white/40 hover:text-white transition-colors relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-[1px] after:bg-white hover:after:w-full after:transition-all after:duration-300">
@@ -324,19 +336,20 @@ export default function ProfilePage() {
                                 </div>
                                 
                                 <div className="flex flex-col gap-2 w-full max-w-[300px]">
-                                    <span className="text-[9px] uppercase tracking-[3px] text-white/30 ml-1">Нікнейм</span>
+                                    <span className="text-[9px] uppercase tracking-[3px] text-white/40 ml-1">ПІБ (Прізвище, Ім&apos;я, По батькові)</span>
                                     {isEditing ? (
                                         <div className="relative group/input">
                                             <input 
                                                 type="text" 
                                                 value={editForm.name} 
+                                                placeholder="Шевченко Тарас Григорович"
                                                 onChange={(e) => setEditForm({...editForm, name: e.target.value})}
-                                                className="w-full bg-white/[0.02] group-hover/input:bg-white/[0.04] border border-transparent focus:border-white/20 focus:bg-transparent px-4 py-3 text-2xl font-fraktur text-white focus:outline-none rounded-xl transition-all duration-300"
+                                                className="w-full bg-white/[0.02] group-hover/input:bg-white/[0.04] border border-transparent focus:border-white/20 focus:bg-transparent px-4 py-3 text-lg font-mono text-white focus:outline-none rounded-xl transition-all duration-300"
                                             />
                                             <div className="absolute inset-0 rounded-xl ring-1 ring-white/5 pointer-events-none group-hover/input:ring-white/10 transition-all duration-300" />
                                         </div>
                                     ) : (
-                                        <p className="text-3xl font-fraktur tracking-wide mt-1">{profile.name}</p>
+                                        <p className="text-2xl font-mono tracking-wide mt-1 text-white/90">{profile.name || "Не вказано"}</p>
                                     )}
                                 </div>
                             </div>

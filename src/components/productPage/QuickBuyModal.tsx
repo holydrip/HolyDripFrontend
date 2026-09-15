@@ -23,8 +23,42 @@ export function QuickBuyModal({ isOpen, onClose, product, size }: Props) {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
 
-  const canSubmit = name.trim().length >= 2 && phone.replace(/\D/g, "").length === 12 && address.trim().length > 5 && size;
+  useEffect(() => {
+    if (!isOpen) return;
+    const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+    if (!token) return;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://holydripbackend-production.up.railway.app";
+    fetch(`${apiUrl}/user/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((user) => {
+        if (user) {
+          setUserId(user.id);
+          setName((prev) => prev || user.name || "");
+          setPhone((prev) => prev || user.phone || "");
+          if (user.address) {
+            try {
+              if (user.address.startsWith("{")) {
+                const parsed = JSON.parse(user.address);
+                const full = [parsed.city, parsed.post, parsed.zip].filter(Boolean).join(", ");
+                setAddress((prev) => prev || full);
+              } else {
+                setAddress((prev) => prev || user.address);
+              }
+            } catch {
+              setAddress((prev) => prev || user.address);
+            }
+          }
+        }
+      })
+      .catch(() => {});
+  }, [isOpen]);
+
+  const nameWords = name.trim().split(/\s+/).filter(Boolean);
+  const canSubmit = nameWords.length >= 2 && name.trim().length >= 5 && phone.replace(/\D/g, "").length === 12 && address.trim().length >= 5 && size;
 
   const handleSubmit = async () => {
     if (!canSubmit) return;
@@ -35,6 +69,7 @@ export function QuickBuyModal({ isOpen, onClose, product, size }: Props) {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          userId: userId || undefined,
           name,
           phone,
           telegram: '@1clickbuy',
@@ -57,6 +92,21 @@ export function QuickBuyModal({ isOpen, onClose, product, size }: Props) {
         setLoading(false);
         return;
       }
+
+      if (userId) {
+        const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+        if (token) {
+          fetch(`${process.env.NEXT_PUBLIC_API_URL || 'https://holydripbackend-production.up.railway.app'}/user/${userId}`, {
+            method: 'PUT',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`
+            },
+            body: JSON.stringify({ name, phone, address })
+          }).catch(() => {});
+        }
+      }
+
       if (data.paymentUrl) {
         window.location.href = data.paymentUrl;
       }
@@ -93,15 +143,20 @@ export function QuickBuyModal({ isOpen, onClose, product, size }: Props) {
 
             <div className="flex flex-col gap-4">
               <div>
-                <label className="text-[10px] uppercase tracking-[3px] text-white/40 mb-2 block">{t("name")}</label>
+                <label className="text-[10px] uppercase tracking-[3px] text-white/40 mb-2 block">
+                  ПІБ (Прізвище, Ім&apos;я, По батькові) *
+                </label>
                 <Input 
                   value={name} onChange={e => setName(e.target.value)} 
-                  placeholder="Олександр" 
+                  placeholder="Шевченко Тарас Григорович" 
                   className="bg-transparent border-white/20 text-white placeholder:text-white/20"
                 />
+                {name.trim().length > 0 && nameWords.length < 2 && (
+                  <span className="text-red-400 text-[10px] mt-1 block">Вкажіть щонайменше прізвище та ім&apos;я</span>
+                )}
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-[3px] text-white/40 mb-2 block">{t("phone")}</label>
+                <label className="text-[10px] uppercase tracking-[3px] text-white/40 mb-2 block">{t("phone")} *</label>
                 <Input 
                   value={phone} onChange={e => setPhone(formatUAPhoneNumber(e.target.value))} 
                   placeholder="+38 (099) 000-00-00" maxLength={19}
@@ -109,10 +164,10 @@ export function QuickBuyModal({ isOpen, onClose, product, size }: Props) {
                 />
               </div>
               <div>
-                <label className="text-[10px] uppercase tracking-[3px] text-white/40 mb-2 block">Місто, Відділення НП</label>
+                <label className="text-[10px] uppercase tracking-[3px] text-white/40 mb-2 block">Місто, Відділення НП *</label>
                 <Input 
                   value={address} onChange={e => setAddress(e.target.value)} 
-                  placeholder="Київ, НП №1" 
+                  placeholder="м. Київ, Відділення №1" 
                   className="bg-transparent border-white/20 text-white placeholder:text-white/20"
                 />
               </div>
