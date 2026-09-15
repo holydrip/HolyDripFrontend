@@ -1,4 +1,4 @@
-import { Update, Ctx, Start, Help, On, Command } from 'nestjs-telegraf';
+import { Update, Ctx, Start, Help, On, Command, Action } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger } from '@nestjs/common';
@@ -195,6 +195,75 @@ export class BotUpdate {
       this.logger.error(e);
       await ctx.reply(`Сталася помилка при створенні товару: ${e.message || JSON.stringify(e)}`);
       this.userStates.delete(ctx.from!.id);
+    }
+  }
+
+  @Action(/^status:(.+):(.+)$/)
+  async onStatusChange(@Ctx() ctx: Context) {
+    if (!this.isAdmin(ctx)) {
+      await ctx.answerCbQuery('У вас немає доступу.');
+      return;
+    }
+
+    // @ts-ignore
+    const match = ctx.match;
+    const orderId = match[1];
+    const newStatus = match[2];
+
+    try {
+      await this.prisma.order.update({
+        where: { id: orderId },
+        data: { status: newStatus as any },
+      });
+
+      const statusLabels: Record<string, string> = {
+        CONFIRMED: '✅ Підтверджено',
+        SHIPPED: '🚚 Відправлено',
+        FAILED: '❌ Скасовано',
+        PAID: '💰 Оплачено',
+        PENDING: '⏳ Очікує оплати',
+      };
+
+      const label = statusLabels[newStatus] || newStatus;
+      await ctx.answerCbQuery(`Статус змінено на: ${label}`);
+
+      const adminUser = ctx.from?.username ? `@${ctx.from.username}` : (ctx.from?.first_name || 'Адмін');
+
+      const keyboard = {
+        inline_keyboard: [
+          [
+            { text: newStatus === 'CONFIRMED' ? '• Підтверджено •' : '✅ Підтвердити', callback_data: `status:${orderId}:CONFIRMED` },
+            { text: newStatus === 'SHIPPED' ? '• Відправлено •' : '🚚 Відправлено', callback_data: `status:${orderId}:SHIPPED` }
+          ],
+          [
+            { text: newStatus === 'FAILED' ? '• Скасовано •' : '❌ Скасувати', callback_data: `status:${orderId}:FAILED` }
+          ]
+        ]
+      };
+
+      try {
+        // @ts-ignore
+        if (ctx.callbackQuery?.message?.caption) {
+          // @ts-ignore
+          const currentCaption = ctx.callbackQuery.message.caption.split('\n\n📌 Статус:')[0];
+          await ctx.editMessageCaption(
+            `${currentCaption}\n\n📌 <b>Статус:</b> ${label} (змінив ${adminUser})`,
+            { parse_mode: 'HTML', reply_markup: keyboard }
+          );
+        } else {
+          // @ts-ignore
+          const currentText = ctx.callbackQuery.message.text.split('\n\n📌 Статус:')[0];
+          await ctx.editMessageText(
+            `${currentText}\n\n📌 <b>Статус:</b> ${label} (змінив ${adminUser})`,
+            { parse_mode: 'HTML', reply_markup: keyboard }
+          );
+        }
+      } catch (editErr) {
+        this.logger.warn('Failed to update telegram message caption/text:', editErr);
+      }
+    } catch (e: any) {
+      this.logger.error('Failed to update status from telegram:', e);
+      await ctx.answerCbQuery('Помилка оновлення статусу в БД');
     }
   }
 }

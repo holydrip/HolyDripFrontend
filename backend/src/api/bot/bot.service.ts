@@ -16,27 +16,46 @@ export class BotService {
         this.chatIds = ids.split(',').map(id => id.trim()).filter(id => id);
     }
 
-    async sendMessage(message: string, photoUrl?: string): Promise<void> {
+    getOrderKeyboard(orderId: string, currentStatus?: string) {
+        return {
+            inline_keyboard: [
+                [
+                    { text: currentStatus === 'CONFIRMED' ? '• Підтверджено •' : '✅ Підтвердити', callback_data: `status:${orderId}:CONFIRMED` },
+                    { text: currentStatus === 'SHIPPED' ? '• Відправлено •' : '🚚 Відправлено', callback_data: `status:${orderId}:SHIPPED` }
+                ],
+                [
+                    { text: currentStatus === 'FAILED' ? '• Скасовано •' : '❌ Скасувати', callback_data: `status:${orderId}:FAILED` }
+                ]
+            ]
+        };
+    }
+
+    async sendMessage(message: string, photoUrl?: string, replyMarkup?: any): Promise<void> {
         if (this.chatIds.length === 0) {
-            this.logger.error('Telegram Chat IDs не найдены в .env!');
+            this.logger.error('Telegram Chat IDs не знайдено в .env!');
             return;
         }
 
         for (const chatId of this.chatIds) {
             try {
+                const extra: any = {
+                    parse_mode: 'HTML',
+                };
+                if (replyMarkup) {
+                    extra.reply_markup = replyMarkup;
+                }
+
                 if (photoUrl) {
                     await this.bot.telegram.sendPhoto(chatId, photoUrl, {
+                        ...extra,
                         caption: message,
-                        parse_mode: 'HTML',
                     });
                 } else {
-                    await this.bot.telegram.sendMessage(chatId, message, {
-                        parse_mode: 'HTML',
-                    });
+                    await this.bot.telegram.sendMessage(chatId, message, extra);
                 }
-                this.logger.log(`Уведомление в Telegram успешно отправлено (chat: ${chatId})`);
+                this.logger.log(`Уведомлення в Telegram успішно надіслано (chat: ${chatId})`);
             } catch (error) {
-                this.logger.error(`Ошибка отправки в ТГ (chat: ${chatId})`, error);
+                this.logger.error(`Помилка відправки в ТГ (chat: ${chatId})`, error);
             }
         }
     }

@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsArray, ValidateNested, IsNumber, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsArray, ValidateNested, IsNumber, IsOptional, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class OrderItemDto {
@@ -29,6 +29,10 @@ export class OrderItemDto {
 
 export class CreateOrderDto {
     @IsString()
+    @IsOptional()
+    userId?: string;
+
+    @IsString()
     @IsNotEmpty({ message: 'Імʼя не може бути пустим' })
     name: string;
 
@@ -52,4 +56,18 @@ export class CreateOrderDto {
     @IsNumber()
     @IsNotEmpty()
     totalPrice: number;
+}
+
+export enum AllowedOrderStatus {
+    PENDING = 'PENDING',
+    PAID = 'PAID',
+    CONFIRMED = 'CONFIRMED',
+    SHIPPED = 'SHIPPED',
+    FAILED = 'FAILED',
+}
+
+export class UpdateOrderStatusDto {
+    @IsEnum(AllowedOrderStatus, { message: 'Невалідний статус замовлення' })
+    @IsNotEmpty()
+    status: AllowedOrderStatus;
 }

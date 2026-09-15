@@ -55,7 +55,8 @@ ${itemsList || 'Пусто'}
 
 <i>Можете відправляти товар клієнту!</i>`;
 
-            this.botService.sendMessage(message, firstProductImage);
+            const keyboard = this.botService.getOrderKeyboard(order.id, 'PAID');
+            this.botService.sendMessage(message, firstProductImage, keyboard);
         } else if (status === 'Declined' || status === 'Expired') {
             await this.prisma.order.update({
                 where: { id: orderId },
