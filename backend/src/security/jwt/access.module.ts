@@ -16,7 +16,7 @@ import { StringValue } from 'ms'
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: configService.get<string>('ACCESS_TTL') as StringValue,
+          expiresIn: '30d',
         },
       }),
     }),

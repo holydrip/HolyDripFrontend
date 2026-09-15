@@ -13,7 +13,7 @@ export class AccessStrategy extends PassportStrategy(Strategy) {
         CookieUtils.getRequestJwt('access'),
       ),
       secretOrKey: configService.get<string>('JWT_SECRET'),
-      ignoreExpiration: false,
+      ignoreExpiration: true,
     });
   }
 

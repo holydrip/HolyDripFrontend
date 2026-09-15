@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   Post,
   Res,
   UseGuards,
@@ -22,6 +23,11 @@ import { ThrottlerGuard, Throttle } from '@nestjs/throttler';
 @UseGuards(ThrottlerGuard)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+
+  @Get('/ping')
+  ping() {
+    return { status: 'ok', timestamp: Date.now() };
+  }
 
   @Post('/register')
   @Throttle({ default: { ttl: 60000, limit: 5 } })

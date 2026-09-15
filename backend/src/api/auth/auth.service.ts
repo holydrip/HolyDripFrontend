@@ -70,10 +70,20 @@ export class AuthService {
       role: user.role,
     };
 
-    const defaultTTL = token === 'access' ? '30d' : '30d';
-    const ttl = this.configService.get<string>(
+    let ttl = '30d';
+    const envTtl = this.configService.get<string>(
       token === 'access' ? 'ACCESS_TTL' : 'REFRESH_TTL',
-    ) || defaultTTL;
+    );
+
+    if (
+      envTtl &&
+      typeof envTtl === 'string' &&
+      envTtl.trim() !== '' &&
+      !envTtl.startsWith('0') &&
+      envTtl !== 'undefined'
+    ) {
+      ttl = envTtl.trim();
+    }
 
     return this.jwtService.sign(payload, {
       expiresIn: ttl as StringValue,
