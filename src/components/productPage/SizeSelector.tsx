@@ -2,18 +2,18 @@
 
 import { cn } from "@/lib/utils";
 export default function SizeSelector({
-  sizes,
+  sizes = [],
   value,
   onChange,
 }: {
-  sizes: string[];
+  sizes?: string[];
   value: string | null;
   onChange: (size: string) => void;
 }) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-2">
-        {sizes.map((s) => {
+        {(sizes || []).map((s) => {
           const selected = value === s;
           return (
             <button

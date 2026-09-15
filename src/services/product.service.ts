@@ -4,13 +4,13 @@ import { client } from "@/sanity/lib/client";
 
 export const ProductService = {
     async getAll() {
-        const query = `*[_type == "product"]{
+        const query = `*[_type == "product"] | order(_createdAt desc){
             "id": _id,
             "name": title,
             "slug": slug.current,
             price,
-            "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
-            sizes,
+            "images": coalesce(images[]{ "url": coalesce(secure_url, asset->url) }.url, []),
+            "sizes": coalesce(sizes, []),
             description,
             "measurements": measurements[]{ size, details },
             "categoryId": category->slug.current
@@ -24,13 +24,13 @@ export const ProductService = {
     },
 
     async getProductBySlug(slug: string) {
-        const query = `*[_type == "product" && slug.current == $slug][0]{
+        const query = `*[_type == "product" && (slug.current == $slug || _id == $slug)][0]{
             "id": _id,
             "name": title,
             "slug": slug.current,
             price,
-            "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
-            sizes,
+            "images": coalesce(images[]{ "url": coalesce(secure_url, asset->url) }.url, []),
+            "sizes": coalesce(sizes, []),
             description,
             "measurements": measurements[]{ size, details },
             "categoryId": category->slug.current

@@ -4,8 +4,8 @@ import Image from "next/image";
 import { useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
 
-export default function ImageGallery({ images, alt }: { images: string[]; alt: string }) {
-  const safeImages = useMemo(() => images.filter(Boolean), [images]);
+export default function ImageGallery({ images = [], alt }: { images?: string[]; alt: string }) {
+  const safeImages = useMemo(() => (images || []).filter(Boolean), [images]);
   const [active, setActive] = useState(0);
   const activeSrc = safeImages[active] ?? safeImages[0];
 
