@@ -19,6 +19,38 @@ export default function CheckoutPage() {
   const [address, setAddress] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [userId, setUserId] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+    if (!token) return;
+    const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://holydripbackend-production.up.railway.app";
+    fetch(`${apiUrl}/user/me`, {
+      headers: { Authorization: `Bearer ${token}` }
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((user) => {
+        if (user) {
+          setUserId(user.id);
+          setName((prev) => prev || user.name || "");
+          setPhone((prev) => prev || user.phone || "");
+          if (user.address) {
+            try {
+              if (user.address.startsWith("{")) {
+                const parsed = JSON.parse(user.address);
+                const full = [parsed.city, parsed.post, parsed.zip].filter(Boolean).join(", ");
+                setAddress((prev) => prev || full);
+              } else {
+                setAddress((prev) => prev || user.address);
+              }
+            } catch {
+              setAddress((prev) => prev || user.address);
+            }
+          }
+        }
+      })
+      .catch(() => {});
+  }, []);
   
   const tagRef = useRef<HTMLInputElement>(null);
   const prefix = "@";
@@ -158,6 +190,7 @@ export default function CheckoutPage() {
                       method: 'POST',
                       headers: { 'Content-Type': 'application/json' },
                       body: JSON.stringify({
+                        userId,
                         name,
                         phone,
                         telegram: tag,

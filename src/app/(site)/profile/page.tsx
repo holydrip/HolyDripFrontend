@@ -560,6 +560,25 @@ export default function ProfilePage() {
                         {/* Order Rows */}
                         {profile.orders.map((order: any) => {
                             const isExpanded = expandedOrder === order.id;
+                            
+                            const getStatusBadge = (status: string) => {
+                                switch (status) {
+                                    case 'PAID':
+                                        return { label: 'Оплачено', dot: 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]', text: 'text-emerald-400' };
+                                    case 'CONFIRMED':
+                                        return { label: 'Підтверджено', dot: 'bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.4)]', text: 'text-sky-400' };
+                                    case 'SHIPPED':
+                                        return { label: 'Відправлено', dot: 'bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.4)]', text: 'text-indigo-400' };
+                                    case 'FAILED':
+                                        return { label: 'Скасовано', dot: 'bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.4)]', text: 'text-rose-400' };
+                                    case 'PENDING':
+                                    default:
+                                        return { label: 'Очікує оплати', dot: 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]', text: 'text-amber-400' };
+                                }
+                            };
+
+                            const statusInfo = getStatusBadge(order.status);
+
                             return (
                                 <div key={order.id} className="flex flex-col border-b border-white/[0.05] last:border-0 group/order">
                                     {/* Row */}
@@ -572,9 +591,9 @@ export default function ProfilePage() {
                                                 #{order.id.slice(0,8)}
                                             </span>
                                             <div className="md:hidden flex items-center gap-2">
-                                                <div className={`w-2 h-2 rounded-full ${order.status === 'PAID' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                                                <span className="text-[9px] uppercase tracking-[2px] text-white/50">
-                                                    {order.status === 'PAID' ? 'Оплачено' : 'Очікує'}
+                                                <div className={`w-2 h-2 rounded-full ${statusInfo.dot}`} />
+                                                <span className={`text-[9px] uppercase tracking-[2px] ${statusInfo.text}`}>
+                                                    {statusInfo.label}
                                                 </span>
                                             </div>
                                         </div>
@@ -584,9 +603,9 @@ export default function ProfilePage() {
                                         </div>
                                         
                                         <div className="hidden md:flex col-span-3 items-center gap-3">
-                                            <div className={`w-1.5 h-1.5 rounded-full ${order.status === 'PAID' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.4)]'}`} />
-                                            <span className={`text-[9px] uppercase tracking-[3px] ${order.status === 'PAID' ? 'text-emerald-500/80' : 'text-amber-500/80'}`}>
-                                                {order.status === 'PAID' ? 'Оплачено' : 'Очікує оплати'}
+                                            <div className={`w-1.5 h-1.5 rounded-full ${statusInfo.dot}`} />
+                                            <span className={`text-[9px] uppercase tracking-[3px] ${statusInfo.text}`}>
+                                                {statusInfo.label}
                                             </span>
                                         </div>
                                         
