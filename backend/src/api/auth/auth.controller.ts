@@ -29,6 +29,15 @@ export class AuthController {
     return { status: 'ok', timestamp: Date.now() };
   }
 
+  @Get('/debug-token')
+  debugToken() {
+    const js = (this.authService as any).jwtService;
+    const token = js.sign({ sub: '123' }, { expiresIn: '30d', secret: 'test-secret' });
+    const decoded = js.decode(token);
+    const envTtl = (this.authService as any).configService.get('ACCESS_TTL');
+    return { token, decoded, envTtl, envTtlType: typeof envTtl };
+  }
+
   @Post('/register')
   @Throttle({ default: { ttl: 60000, limit: 5 } })
   async register(
