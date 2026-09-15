@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-html-link-for-pages */
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState, useEffect } from "react";
 import { useMounted } from "@/lib/useMounted";
 import { useCart } from "@/context/CartContext";
 import { Input } from "@/components/ui/Input";
