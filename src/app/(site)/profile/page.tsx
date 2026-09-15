@@ -136,15 +136,15 @@ export default function ProfilePage() {
           if (res.ok) {
               const updated = await res.json();
               setProfile((prev: any) => ({ ...prev, ...updated }));
+              setIsEditing(false);
           } else {
-              const fakeAddress = JSON.stringify({ city: editForm.city, post: editForm.post, zip: editForm.zip });
-              setProfile((prev: any) => ({ ...prev, name: editForm.name, email: editForm.email, phone: editForm.phone, address: fakeAddress, avatarUrl: editForm.avatarUrl }));
+              const data = await res.json().catch(() => ({}));
+              const msg = Array.isArray(data.message) ? data.message.join(', ') : (data.message || 'Помилка збереження даних');
+              alert(msg);
           }
-      } catch (err) {
-          const fakeAddress = JSON.stringify({ city: editForm.city, post: editForm.post, zip: editForm.zip });
-          setProfile((prev: any) => ({ ...prev, name: editForm.name, email: editForm.email, phone: editForm.phone, address: fakeAddress, avatarUrl: editForm.avatarUrl }));
+      } catch (err: any) {
+          alert(err.message || 'Помилка зʼєднання з сервером');
       } finally {
-          setIsEditing(false);
           setSaving(false);
       }
   };

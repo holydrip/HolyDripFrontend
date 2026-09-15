@@ -15,7 +15,8 @@ export class AdminOrMeGuard implements CanActivate {
       return true;
     }
 
-    if (user.id !== request.params.userId) {
+    const targetUserId = request.params.id || request.params.userId;
+    if (user.id !== targetUserId) {
       throw new NoPermissionException();
     }
 

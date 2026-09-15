@@ -39,19 +39,19 @@ export function QuickBuyModal({ isOpen, onClose, product, size }: Props) {
       .then((user) => {
         if (user) {
           setUserId(user.id);
-          setName((prev) => prev || user.name || "");
-          setPhone((prev) => prev || user.phone || "");
+          if (user.name) setName((prev) => prev.trim() ? prev : user.name);
+          if (user.phone) setPhone((prev) => prev.trim() ? prev : formatUAPhoneNumber(user.phone));
           if (user.address) {
             try {
               if (user.address.startsWith("{")) {
                 const parsed = JSON.parse(user.address);
                 const full = [parsed.city, parsed.post, parsed.zip].filter(Boolean).join(", ");
-                setAddress((prev) => prev || full);
+                if (full) setAddress((prev) => prev.trim() ? prev : full);
               } else {
-                setAddress((prev) => prev || user.address);
+                setAddress((prev) => prev.trim() ? prev : user.address);
               }
             } catch {
-              setAddress((prev) => prev || user.address);
+              setAddress((prev) => prev.trim() ? prev : user.address);
             }
           }
         }
