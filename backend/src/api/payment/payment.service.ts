@@ -1,5 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import * as crypto from 'crypto';
+import axios from 'axios';
 
 @Injectable()
 export class PaymentService {
@@ -56,20 +57,13 @@ export class PaymentService {
                 productCount: productCounts,
             };
 
-            const response = await fetch(this.wayforpayApiUrl, {
-                method: 'POST',
+            const response = await axios.post(this.wayforpayApiUrl, payload, {
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(payload)
+                }
             });
 
-            if (!response.ok) {
-                const err = await response.text();
-                throw new Error(err);
-            }
-
-            const data = await response.json();
+            const data = response.data;
             if (data.reasonCode !== 1100) {
                 throw new Error(data.reason || 'Failed to create WayForPay invoice');
             }
