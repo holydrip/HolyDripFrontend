@@ -84,7 +84,7 @@ export class OrderService {
 
         // 5. Send Telegram Notification immediately with action buttons
         try {
-            const itemsList = dto.items.map(i => `▫️ <b>${i.name}</b>\n   Розмір: ${i.size} | К-сть: ${i.quantity} шт | Ціна: ${i.price} ₴`).join('\n');
+            const itemsList = dto.items.map(i => `▫️ <b>${i.name?.trim()}</b>\n   Розмір: ${i.size} | К-сть: ${i.quantity} шт | Ціна: ${i.price} ₴`).join('\n');
             const firstProductImage = dto.items[0]?.image || order.items[0]?.product?.images?.[0] || undefined;
 
             const message = `
@@ -119,7 +119,7 @@ ${itemsList || 'Пусто'}
     }
 
     async getAllOrders() {
-        return this.prisma.order.findMany({
+        const orders = await this.prisma.order.findMany({
             include: {
                 items: {
                     include: { product: true }
@@ -137,6 +137,17 @@ ${itemsList || 'Пусто'}
                 createdAt: 'desc'
             }
         });
+
+        return orders.map(order => ({
+            ...order,
+            items: order.items.map(item => ({
+                ...item,
+                product: item.product ? {
+                    ...item.product,
+                    name: item.product.name.trim()
+                } : item.product
+            }))
+        }));
     }
 
     async getOrderById(id: string) {
@@ -158,7 +169,16 @@ ${itemsList || 'Пусто'}
         if (!order) {
             throw new NotFoundException(`Order with id ${id} not found`);
         }
-        return order;
+        return {
+            ...order,
+            items: order.items.map(item => ({
+                ...item,
+                product: item.product ? {
+                    ...item.product,
+                    name: item.product.name.trim()
+                } : item.product
+            }))
+        };
     }
 
     async updateOrderStatus(id: string, status: any) {

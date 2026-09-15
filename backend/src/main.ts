@@ -5,6 +5,7 @@ import { PrismaExceptionFilter } from './filters/prisma-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import * as cookieParser from 'cookie-parser';
 import helmet from 'helmet';
+import { PrismaService } from './database/prisma.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -56,6 +57,23 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('swagger/api', app, document);
+
+
+  // Auto-cleanup any product names with leading/trailing whitespace
+  try {
+    const prisma = app.get(PrismaService);
+    const products = await prisma.product.findMany();
+    for (const p of products) {
+      if (p.name && p.name !== p.name.trim()) {
+        await prisma.product.update({
+          where: { id: p.id },
+          data: { name: p.name.trim() }
+        });
+      }
+    }
+  } catch (err) {
+    console.error('Failed to cleanup product names:', err);
+  }
 
   await app.listen(process.env.PORT ?? 8800, '0.0.0.0');
 }
