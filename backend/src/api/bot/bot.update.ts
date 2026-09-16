@@ -1,203 +1,300 @@
-import { Update, Ctx, Start, Help, On, Command, Action } from 'nestjs-telegraf';
+import { Update, Ctx, Start, Help, Command, Action, Hears } from 'nestjs-telegraf';
 import { Context } from 'telegraf';
 import { ConfigService } from '@nestjs/config';
 import { Injectable, Logger } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
-import { createClient } from '@sanity/client';
-import axios from 'axios';
-import { v2 as cloudinary } from 'cloudinary';
 
-// Simple in-memory state for adding a product
-interface AddProductState {
-  step: 'IDLE' | 'AWAITING_NAME' | 'AWAITING_PRICE' | 'AWAITING_CATEGORY' | 'AWAITING_SIZES' | 'AWAITING_DESCRIPTION' | 'AWAITING_PHOTO';
-  name?: string;
-  price?: number;
-  categoryName?: string;
-  sizes?: string[];
-  description?: string;
-}
+const MAIN_KEYBOARD = {
+  keyboard: [
+    [{ text: '📦 Останні замовлення' }, { text: '📊 Статистика' }],
+    [{ text: '🛍 Каталог товарів' }, { text: 'ℹ️ Довідка' }],
+  ],
+  resize_keyboard: true,
+};
 
 @Update()
 @Injectable()
 export class BotUpdate {
   private readonly logger = new Logger(BotUpdate.name);
-  private userStates: Map<number, AddProductState> = new Map();
-  private sanityClient;
 
   constructor(
     private readonly configService: ConfigService,
     private readonly prisma: PrismaService,
-  ) {
-    this.sanityClient = createClient({
-      projectId: this.configService.get<string>('NEXT_PUBLIC_SANITY_PROJECT_ID') || 'dummyId123',
-      dataset: this.configService.get<string>('NEXT_PUBLIC_SANITY_DATASET') || 'production',
-      useCdn: false,
-      apiVersion: '2023-05-03',
-      token: this.configService.get<string>('SANITY_API_TOKEN'),
-    });
-
-    cloudinary.config({
-      cloud_name: this.configService.get<string>('CLOUDINARY_CLOUD_NAME'),
-      api_key: this.configService.get<string>('CLOUDINARY_API_KEY'),
-      api_secret: this.configService.get<string>('CLOUDINARY_API_SECRET'),
-    });
-  }
+  ) {}
 
   private isAdmin(ctx: Context): boolean {
     const adminIds = this.configService.get<string>('TELEGRAM_ADMIN_CHAT_ID')?.split(',').map(id => id.trim()) || [];
     return adminIds.includes(ctx.from?.id.toString() || '');
   }
 
+  // --- /start, /menu, 🏠 Меню ---
   @Start()
   async start(@Ctx() ctx: Context) {
     if (!this.isAdmin(ctx)) {
-      await ctx.reply('Ви не маєте доступу до цього бота.');
+      await ctx.reply('⛔ У вас немає доступу до панелі адміністратора Holy Drip.');
       return;
     }
-    await ctx.reply('Привіт, Адмін! Я готовий приймати замовлення.\n\nКоманди:\n/addproduct - Додати новий товар');
+
+    const name = ctx.from?.first_name || 'Адмін';
+
+    const text = `👑 <b>Вітаємо, ${name}!</b>
+Панель керування магазином <b>Holy Drip</b>.
+
+Бот синхронізований із сайтом і готовий приймати сповіщення про замовлення в реальному часі.
+
+<b>📋 Доступні команди:</b>
+📦 <b>/orders</b> — Останні замовлення сайту та зміна статусів
+📊 <b>/stats</b> — Фінансова аналітика та підсумки продажів
+🛍 <b>/products</b> — Каталог товарів магазину
+ℹ️ <b>/help</b> — Інструкція та керування статусами
+
+<i>Оберіть потрібну дію на панелі нижче 👇</i>`;
+
+    await ctx.reply(text, {
+      parse_mode: 'HTML',
+      reply_markup: MAIN_KEYBOARD,
+    });
   }
 
-  @Command('addproduct')
-  async onAddProduct(@Ctx() ctx: Context) {
-    if (!this.isAdmin(ctx)) return;
-
-    this.userStates.set(ctx.from!.id, { step: 'AWAITING_NAME' });
-    await ctx.reply('Давай додамо товар! Напиши назву товару (наприклад: "Vintage Hoodie"):');
+  @Command('menu')
+  async onMenu(@Ctx() ctx: Context) {
+    await this.start(ctx);
   }
 
-  @On('text')
-  async onMessage(@Ctx() ctx: Context) {
-    if (!this.isAdmin(ctx)) return;
-    
-    // @ts-ignore
-    const text = ctx.message?.text;
-    if (!text) return;
-
-    const state = this.userStates.get(ctx.from!.id);
-    if (!state || state.step === 'IDLE') return;
-
-    switch (state.step) {
-      case 'AWAITING_NAME':
-        state.name = text;
-        state.step = 'AWAITING_PRICE';
-        await ctx.reply(`Назва: ${state.name}\nТепер введи ціну (тільки цифри, наприклад: 1500):`);
-        break;
-      case 'AWAITING_PRICE':
-        const price = parseFloat(text);
-        if (isNaN(price)) {
-          await ctx.reply('Будь ласка, введи коректну ціну цифрами.');
-          return;
-        }
-        state.price = price;
-        state.step = 'AWAITING_CATEGORY';
-        
-        const categories = await this.prisma.category.findMany();
-        const catNames = categories.map(c => c.name).join(', ');
-        await ctx.reply(`Ціна: ${state.price} UAH\nВибери категорію (Наявні: ${catNames}):`);
-        break;
-      case 'AWAITING_CATEGORY':
-        state.categoryName = text;
-        state.step = 'AWAITING_SIZES';
-        await ctx.reply(`Категорія: ${state.categoryName}\nТепер введи розміри через кому (наприклад: S, M, L, XL):`);
-        break;
-      case 'AWAITING_SIZES':
-        state.sizes = text.split(',').map(s => s.trim());
-        state.step = 'AWAITING_DESCRIPTION';
-        await ctx.reply(`Розміри: ${state.sizes.join(', ')}\nТепер напишіть опис товару (текст):`);
-        break;
-      case 'AWAITING_DESCRIPTION':
-        state.description = text;
-        state.step = 'AWAITING_PHOTO';
-        await ctx.reply(`Опис збережено!\nСупер! Залишилося лише відправити фото товару (надішли одне фото).`);
-        break;
-    }
+  @Hears('🏠 Меню')
+  async onMenuHears(@Ctx() ctx: Context) {
+    await this.start(ctx);
   }
 
-  @On('photo')
-  async onPhoto(@Ctx() ctx: Context) {
+  // --- /orders & 📦 Останні замовлення ---
+  @Command('orders')
+  async onOrders(@Ctx() ctx: Context) {
     if (!this.isAdmin(ctx)) return;
-
-    const state = this.userStates.get(ctx.from!.id);
-    if (!state || state.step !== 'AWAITING_PHOTO') return;
-
-    // @ts-ignore
-    const photos = ctx.message?.photo;
-    if (!photos) return;
-
-    await ctx.reply('Оброблюю фото та створюю товар у Sanity та БД... Зачекай.');
 
     try {
-      // Get highest resolution photo
-      const photo = photos[photos.length - 1];
-      const fileId = photo.file_id;
-      const fileUrl = await ctx.telegram.getFileLink(fileId);
-      
-      // Upload to Cloudinary
-      const cloudinaryResponse = await cloudinary.uploader.upload(fileUrl.href, {
-        folder: 'holydrip/products',
-        public_id: state.name!.toLowerCase().replace(/\s+/g, '-'),
-      });
-
-      // Find Category
-      let category = await this.prisma.category.findFirst({ where: { name: { equals: state.categoryName, mode: 'insensitive' } } });
-      if (!category) {
-        category = await this.prisma.category.findFirst(); // fallback to first category if not found
-      }
-      if (!category) throw new Error("Немає категорій в БД");
-
-      // Generate IDs
-      const sanityId = `product-${Date.now()}`;
-      const slug = state.name!.toLowerCase().replace(/\s+/g, '-');
-      
-      // Create product in Prisma
-      const newProduct = await this.prisma.product.create({
-        data: {
-          name: state.name!,
-          price: state.price!,
-          description: state.description || "Товар додано з Telegram",
-          sizes: state.sizes!,
-          categoryId: category.id,
-          images: [cloudinaryResponse.secure_url],
-          sanityId: sanityId,
-          slug: slug,
+      const orders = await this.prisma.order.findMany({
+        take: 5,
+        orderBy: { createdAt: 'desc' },
+        include: {
+          items: {
+            include: { product: true }
+          }
         }
       });
 
-      // Attempt to create in Sanity
-      try {
-        await this.sanityClient.create({
-          _type: 'product',
-          _id: sanityId,
-          title: newProduct.name, // Fixed: Schema expects 'title'
-          slug: { _type: 'slug', current: newProduct.slug },
-          price: Number(newProduct.price),
-          description: newProduct.description,
-          category: { _type: 'reference', _ref: category.sanityId }, // Assuming category.sanityId exists
-          images: [{
-            _type: 'cloudinary.asset',
-            secure_url: cloudinaryResponse.secure_url,
-            public_id: cloudinaryResponse.public_id,
-            format: cloudinaryResponse.format,
-            version: cloudinaryResponse.version,
-            resource_type: cloudinaryResponse.resource_type,
-            width: cloudinaryResponse.width,
-            height: cloudinaryResponse.height,
-          }],
-          sizes: newProduct.sizes,
+      if (!orders || orders.length === 0) {
+        await ctx.reply('📦 <b>Замовлень поки немає.</b>\nЩойно клієнт оформить покупку на сайті, сповіщення надійде сюди автоматично!', {
+          parse_mode: 'HTML',
+          reply_markup: MAIN_KEYBOARD,
         });
-      } catch (e) {
-        this.logger.error("Error creating in Sanity", e);
+        return;
       }
 
-      await ctx.reply(`✅ Товар успішно додано!\nНазва: ${newProduct.name}\nЦіна: ${newProduct.price} UAH\nCloudinary URL: ${cloudinaryResponse.secure_url}`);
-      this.userStates.delete(ctx.from!.id);
+      const statusMap: Record<string, string> = {
+        PENDING: '⏳ Очікує оплати',
+        PAID: '💳 Оплачено',
+        CONFIRMED: '✅ Підтверджено',
+        SHIPPED: '🚚 Відправлено',
+        FAILED: '❌ Скасовано',
+      };
+
+      let msg = `📦 <b>Останні ${orders.length} замовлень сайту:</b>\n\n`;
+
+      for (let i = 0; i < orders.length; i++) {
+        const o = orders[i];
+        const shortId = o.id.slice(0, 8);
+        const dateStr = new Date(o.createdAt).toLocaleString('uk-UA', { timeZone: 'Europe/Kyiv' });
+        const st = statusMap[o.status] || o.status;
+        const tgLink = o.telegram ? (o.telegram.startsWith('@') ? o.telegram : `@${o.telegram}`) : '—';
+        
+        const itemsSummary = o.items.map(it => `  • ${it.product?.name || 'Товар'} (${it.size}) × ${it.quantity} — ${it.price} ₴`).join('\n');
+
+        msg += `<b>${i + 1}. Замовлення #${shortId}</b> (${dateStr})\n`;
+        msg += `👤 <b>Клієнт:</b> ${o.name} | 📱 <code>${o.phone}</code> | 💬 ${tgLink}\n`;
+        if (o.address) {
+          msg += `📍 <b>Адреса:</b> ${o.address}\n`;
+        }
+        msg += `📌 <b>Статус:</b> <b>${st}</b>\n`;
+        msg += `🛒 <b>Склад:</b>\n${itemsSummary || '  —'}\n`;
+        msg += `💰 <b>Разом:</b> <b>${o.totalPrice} ₴</b>\n\n`;
+      }
+
+      // For the most recent order, attach interactive status buttons
+      const latest = orders[0];
+      const latestStatus = latest.status as string;
+      const keyboard = {
+        inline_keyboard: [
+          [
+            { text: latestStatus === 'PAID' ? '• Оплачено •' : '💳 Оплачено', callback_data: `status:${latest.id}:PAID` },
+            { text: latestStatus === 'CONFIRMED' ? '• Підтверджено •' : '✅ Підтвердити', callback_data: `status:${latest.id}:CONFIRMED` }
+          ],
+          [
+            { text: latestStatus === 'SHIPPED' ? '• Відправлено •' : '🚚 Відправлено', callback_data: `status:${latest.id}:SHIPPED` },
+            { text: latestStatus === 'FAILED' ? '• Скасовано •' : '❌ Скасувати', callback_data: `status:${latest.id}:FAILED` }
+          ]
+        ]
+      };
+
+      msg += `<i>Швидкі дії для крайнього замовлення (#${latest.id.slice(0, 8)}):</i>`;
+
+      await ctx.reply(msg, {
+        parse_mode: 'HTML',
+        reply_markup: keyboard,
+      });
     } catch (e: any) {
-      this.logger.error(e);
-      await ctx.reply(`Сталася помилка при створенні товару: ${e.message || JSON.stringify(e)}`);
-      this.userStates.delete(ctx.from!.id);
+      this.logger.error('Error fetching orders:', e);
+      await ctx.reply(`❌ Помилка при отриманні замовлень: ${e.message}`);
     }
   }
 
+  @Hears('📦 Останні замовлення')
+  async onOrdersHears(@Ctx() ctx: Context) {
+    await this.onOrders(ctx);
+  }
+
+  @Hears('📦 Замовлення')
+  async onOrdersHearsShort(@Ctx() ctx: Context) {
+    await this.onOrders(ctx);
+  }
+
+  // --- /stats & 📊 Статистика ---
+  @Command('stats')
+  async onStats(@Ctx() ctx: Context) {
+    if (!this.isAdmin(ctx)) return;
+
+    try {
+      const orders = await this.prisma.order.findMany();
+      const usersCount = await this.prisma.user.count();
+      const productsCount = await this.prisma.product.count();
+
+      const totalOrders = orders.length;
+      const paidOrders = orders.filter(o => (o.status as string) === 'PAID');
+      const confirmedOrders = orders.filter(o => (o.status as string) === 'CONFIRMED');
+      const shippedOrders = orders.filter(o => (o.status as string) === 'SHIPPED');
+      const pendingOrders = orders.filter(o => (o.status as string) === 'PENDING');
+      const failedOrders = orders.filter(o => (o.status as string) === 'FAILED');
+
+      const sumPaid = paidOrders.reduce((s, o) => s + Number(o.totalPrice), 0);
+      const sumConfirmed = confirmedOrders.reduce((s, o) => s + Number(o.totalPrice), 0);
+      const sumShipped = shippedOrders.reduce((s, o) => s + Number(o.totalPrice), 0);
+      const sumSuccessful = sumPaid + sumConfirmed + sumShipped;
+
+      const sumPending = pendingOrders.reduce((s, o) => s + Number(o.totalPrice), 0);
+
+      const msg = `📊 <b>СТАТИСТИКА МАГАЗИНУ HOLY DRIP</b>
+
+💰 <b>Фінансові показники:</b>
+• <b>Успішний виторг:</b> <b>${sumSuccessful.toLocaleString('uk-UA')} ₴</b>
+  ├ 💳 Оплачено: <b>${sumPaid.toLocaleString('uk-UA')} ₴</b> (${paidOrders.length} зам.)
+  ├ ✅ Підтверджено: <b>${sumConfirmed.toLocaleString('uk-UA')} ₴</b> (${confirmedOrders.length} зам.)
+  └ 🚚 Відправлено: <b>${sumShipped.toLocaleString('uk-UA')} ₴</b> (${shippedOrders.length} зам.)
+
+• ⏳ <b>Очікує оплати:</b> ${sumPending.toLocaleString('uk-UA')} ₴ (${pendingOrders.length} зам.)
+• ❌ <b>Скасовано:</b> ${failedOrders.length} зам.
+
+📦 <b>Загальні дані:</b>
+• Всього замовлень: <b>${totalOrders}</b>
+• Товарів у базі: <b>${productsCount}</b>
+• Клієнтів зареєстровано: <b>${usersCount}</b>`;
+
+      await ctx.reply(msg, {
+        parse_mode: 'HTML',
+        reply_markup: MAIN_KEYBOARD,
+      });
+    } catch (e: any) {
+      this.logger.error('Error calculating stats:', e);
+      await ctx.reply(`❌ Помилка при розрахунку статистики: ${e.message}`);
+    }
+  }
+
+  @Hears('📊 Статистика')
+  async onStatsHears(@Ctx() ctx: Context) {
+    await this.onStats(ctx);
+  }
+
+  // --- /products & 🛍 Каталог товарів ---
+  @Command('products')
+  async onProducts(@Ctx() ctx: Context) {
+    if (!this.isAdmin(ctx)) return;
+
+    try {
+      const total = await this.prisma.product.count();
+      const products = await this.prisma.product.findMany({
+        take: 10,
+        orderBy: { createdAt: 'desc' },
+        include: { category: true }
+      });
+
+      if (!products || products.length === 0) {
+        await ctx.reply('🛍 Каталог товарів порожній.', { reply_markup: MAIN_KEYBOARD });
+        return;
+      }
+
+      let msg = `🛍 <b>Каталог товарів Holy Drip (всього: ${total}):</b>\n\n`;
+      products.forEach((p, i) => {
+        const sizes = p.sizes?.length ? p.sizes.join(', ') : 'One Size';
+        msg += `${i + 1}. <b>${p.name}</b>\n`;
+        msg += `   Ціна: <b>${p.price || 0} ₴</b> | Категорія: <i>${p.category?.name || '—'}</i>\n`;
+        msg += `   Розміри: <code>${sizes}</code>\n\n`;
+      });
+
+      msg += `<i>💡 Керування товарами та фото здійснюється через Sanity Studio або CRM.</i>`;
+
+      await ctx.reply(msg, {
+        parse_mode: 'HTML',
+        reply_markup: MAIN_KEYBOARD,
+      });
+    } catch (e: any) {
+      this.logger.error('Error fetching products:', e);
+      await ctx.reply(`❌ Помилка: ${e.message}`);
+    }
+  }
+
+  @Hears('🛍 Каталог товарів')
+  async onProductsHears(@Ctx() ctx: Context) {
+    await this.onProducts(ctx);
+  }
+
+  @Hears('🛍 Товари')
+  async onProductsHearsShort(@Ctx() ctx: Context) {
+    await this.onProducts(ctx);
+  }
+
+  // --- /help & ℹ️ Довідка ---
+  @Help()
+  @Command('help')
+  async onHelp(@Ctx() ctx: Context) {
+    if (!this.isAdmin(ctx)) return;
+
+    const msg = `ℹ️ <b>ДОВІДКА ДЛЯ АДМІНІСТРАТОРА HOLY DRIP</b>
+
+<b>Можливості бота:</b>
+1. <b>Миттєві сповіщення:</b> При кожному замовленні на сайті бот надсилає детальну картку з фото товару, контактами покупця (телефон, Telegram, адреса доставки) та складом кошика.
+2. <b>Керування статусами:</b> Під кожним замовленням є кнопки зміни статусу в 1 клік:
+   • <b>💳 Оплачено</b> (PAID) — оплата отримана
+   • <b>✅ Підтвердити</b> (CONFIRMED) — замовлення взято в роботу
+   • <b>🚚 Відправлено</b> (SHIPPED) — відправлено клієнту
+   • <b>❌ Скасувати</b> (FAILED) — скасування замовлення
+   <i>Статус автоматично синхронізується з сайтом та особистим кабінетом клієнта!</i>
+
+3. <b>Команди швидкого доступу:</b>
+   • <b>/orders</b> — Останні замовлення сайту
+   • <b>/stats</b> — Фінансовий звіт та статистика
+   • <b>/products</b> — Каталог товарів сайту
+   • <b>/menu</b> — Головне меню з кнопками дій`;
+
+    await ctx.reply(msg, {
+      parse_mode: 'HTML',
+      reply_markup: MAIN_KEYBOARD,
+    });
+  }
+
+  @Hears('ℹ️ Довідка')
+  async onHelpHears(@Ctx() ctx: Context) {
+    await this.onHelp(ctx);
+  }
+
+  // --- Action for order status changes ---
   @Action(/^status:(.+):(.+)$/)
   async onStatusChange(@Ctx() ctx: Context) {
     if (!this.isAdmin(ctx)) {
@@ -220,7 +317,7 @@ export class BotUpdate {
         CONFIRMED: '✅ Підтверджено',
         SHIPPED: '🚚 Відправлено',
         FAILED: '❌ Скасовано',
-        PAID: '💰 Оплачено',
+        PAID: '💳 Оплачено',
         PENDING: '⏳ Очікує оплати',
       };
 

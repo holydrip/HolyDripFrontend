@@ -40,6 +40,18 @@ export class BotModule implements OnModuleInit {
     const launchBot = async () => {
       try {
         await this.bot.telegram.deleteWebhook({ drop_pending_updates: true });
+
+        try {
+          await this.bot.telegram.setMyCommands([
+            { command: 'orders', description: '📦 Останні замовлення сайту' },
+            { command: 'stats', description: '📊 Статистика замовлень і продажів' },
+            { command: 'products', description: '🛍 Каталог товарів' },
+            { command: 'menu', description: '🏠 Головне меню з кнопками' },
+            { command: 'help', description: 'ℹ️ Довідка та інструкція' },
+          ]);
+        } catch (cmdErr: any) {
+          this.logger.warn(`Failed to set Telegram commands: ${cmdErr.message}`);
+        }
         
         this.logger.log('Attempting to launch Telegram bot...');
         // bot.launch() resolves only when the bot stops or crashes
