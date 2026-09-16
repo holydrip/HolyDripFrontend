@@ -57,7 +57,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 flex items-center justify-between px-6 sm:px-12 md:px-[70px] transition-all duration-300 ${
+        className={`sticky top-0 relative z-50 flex items-center justify-between px-6 sm:px-12 md:px-[70px] transition-all duration-300 ${
           scrolled 
             ? "bg-transparent/95 backdrop-blur-md border-b border-white/10 py-3" 
             : "bg-transparent border-b border-transparent py-5"
@@ -71,7 +71,15 @@ export default function Header() {
           />
         </Link>
 
-        <nav className="hidden md:flex items-center gap-6 lg:gap-10 md:absolute md:left-1/2 md:top-1/2 md:-translate-x-1/2 md:-translate-y-1/2 z-40">
+        <nav
+          className="hidden md:flex items-center gap-6 lg:gap-10 z-40"
+          style={{
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate(-50%, -50%)",
+          }}
+        >
           {navLinks.map((l) => (
             <div key={l.label} className="relative group">
               <Link
@@ -99,7 +107,7 @@ export default function Header() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-6 relative z-50">
+        <div className="flex items-center gap-4 lg:gap-6 relative z-50">
           <LanguageSwitcher />
           <HeaderSearch />
           
@@ -112,7 +120,7 @@ export default function Header() {
 
           <Link
             href="/cart"
-            className="hidden md:flex items-center gap-2 font-sans text-[10px] font-medium uppercase tracking-[3px] text-white border border-white/20 px-6 py-2.5 hover:bg-white hover:text-black transition-all duration-300"
+            className="hidden md:flex items-center gap-2 font-sans text-[10px] font-medium uppercase tracking-[3px] text-white border border-white/20 px-4 lg:px-6 py-2.5 hover:bg-white hover:text-black transition-all duration-300"
           >
             {t("cart")} ({cartAmount})
           </Link>
