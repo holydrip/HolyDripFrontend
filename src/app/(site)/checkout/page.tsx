@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { TelegramService } from "@/services/telegram.service";
 import { formatUAPhoneNumber } from "@/lib/phoneMask";
+import { NovaPoshtaPicker } from "@/components/checkout/NovaPoshtaPicker";
 
 export default function CheckoutPage() {
   const mounted = useMounted();
@@ -178,14 +179,10 @@ export default function CheckoutPage() {
                   placeholder="@username"
                 />
               </div>
-              <div className="flex flex-col gap-2 sm:col-span-2">
-                <div className="text-[10px] uppercase tracking-[2px] text-white/40">Місто та відділення НП</div>
-                <Input
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  placeholder="м. Київ, Відділення №1"
-                />
-              </div>
+              <NovaPoshtaPicker
+                value={address}
+                onChange={setAddress}
+              />
             </div>
 
             <div className="mt-10">

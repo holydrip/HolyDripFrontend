@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Оплата та доставка",
+  description: "Умови доставки та оплати в кураторському fashion-архіві HOLY DRIP. Відправка по Україні Новою Поштою.",
+  alternates: {
+    canonical: "/info/delivery",
+  },
+};
+
 export default function DeliveryPage() {
     return (
         <main className="w-full min-h-screen py-32 px-6 sm:px-12 md:px-[70px] text-white/90 leading-relaxed font-sans" style={{ backgroundColor: "transparent" }}>
@@ -7,7 +17,7 @@ export default function DeliveryPage() {
                 </h1>
 
                 <p className="text-base mb-10 text-white/70 font-light leading-relaxed">
-                    <strong className="text-white font-normal">Holy Drip</strong> функціонує як закритий сервіс індивідуального пошуку та викупу товарів (High-End Replicas / Archive Fashion) від іноземних постачальників. Оформлюючи замовлення, клієнт погоджується з наведеними нижче умовами.
+                    <strong className="text-white font-normal">Holy Drip</strong> функціонує як кураторський fashion-архів та консьєрж-сервіс індивідуального пошуку концептуального дизайнерського одягу (Archive Fashion & Curated Pieces) від перевірених іноземних постачальників та приватних колекцій. Оформлюючи замовлення, клієнт погоджується з наведеними нижче умовами.
                 </p>
 
                 <h2 className="text-xl md:text-2xl font-bold mt-12 mb-6 text-white uppercase tracking-wider">1. Доставка та терміни</h2>

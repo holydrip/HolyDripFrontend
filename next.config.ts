@@ -22,6 +22,15 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  async redirects() {
+    return [
+      {
+        source: '/cart/:slug',
+        destination: '/product/:slug',
+        permanent: true,
+      },
+    ];
+  },
 } as any;
 
 export default nextConfig;

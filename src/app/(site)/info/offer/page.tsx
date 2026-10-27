@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Публічна оферта",
+  description: "Договір публічної оферти та умови використання сервісу HOLY DRIP.",
+  alternates: {
+    canonical: "/info/offer",
+  },
+};
+
 export default function OfferPage() {
     return (
         <main className="w-full min-h-screen py-32 px-6 sm:px-12 md:px-[70px] text-white/90 leading-relaxed font-sans" style={{ backgroundColor: "transparent" }}>

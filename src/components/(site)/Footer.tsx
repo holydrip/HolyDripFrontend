@@ -66,7 +66,7 @@ export default function Footer() {
               {[
                 { label: "Instagram", href: "https://www.instagram.com/holyd_rip?igsh=bTJrODA2MDV2ZmR6&utm_source=qr", external: true },
                 { label: "Telegram", href: "https://t.me/HolyDrip22", external: true },
-                { label: "support@holydrip.com.ua", href: "mailto:holydrip99@gmail.com", external: false },
+                { label: "holydrip99@gmail.com", href: "mailto:holydrip99@gmail.com", external: false },
               ].map((l) => (
                 <li key={l.href}>
                   <a

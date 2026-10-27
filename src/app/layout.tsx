@@ -54,9 +54,7 @@ export const metadata: Metadata = {
   authors: [{ name: "HOLY DRIP" }],
   creator: "HOLY DRIP",
   publisher: "HOLY DRIP",
-  alternates: {
-    canonical: "/",
-  },
+
   robots: {
     index: true,
     follow: true,

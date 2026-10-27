@@ -13,11 +13,15 @@ export async function generateMetadata({
   const formattedId = id.charAt(0).toUpperCase() + id.slice(1);
 
   return {
-    title: `${formattedId} | Каталог`,
+    title: formattedId,
     description: `Архівні речі та дизайнерський одяг у категорії ${formattedId}. HOLY DRIP.`,
+    alternates: {
+      canonical: `/catalog/${id}`,
+    },
     openGraph: {
-      title: `${formattedId} | HOLY DRIP Каталог`,
-      description: `Кураторський архів. Категорія: ${formattedId}.`
+      title: `${formattedId} | HOLY DRIP`,
+      description: `Кураторський архів. Категорія: ${formattedId}.`,
+      url: `https://holydrip.com.ua/catalog/${id}`,
     }
   };
 }

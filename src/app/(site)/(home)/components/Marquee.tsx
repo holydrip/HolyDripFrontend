@@ -1,5 +1,5 @@
 const marqueeItems = [
-  "High-End Replicas 1:1", "Individual Search", "QC Photo Report",
+  "Curated Fashion Archive", "Individual Search", "QC Photo Report",
   "Holy Drip — In Swag We Trust", "New Drop Every Friday", "Curator Service",
 ];
 

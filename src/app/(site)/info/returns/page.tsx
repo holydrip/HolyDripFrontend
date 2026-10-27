@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Обмін та повернення",
+  description: "Політика обміну та повернення товарів у кураторському fashion-архіві HOLY DRIP.",
+  alternates: {
+    canonical: "/info/returns",
+  },
+};
+
 export default function ReturnsPage() {
     return (
         <main className="w-full min-h-screen py-32 px-6 sm:px-12 md:px-[70px] text-white/90 leading-relaxed font-sans" style={{ backgroundColor: "transparent" }}>

@@ -113,7 +113,7 @@ export function HeaderSearch() {
                   {results.map((product) => (
                     <Link
                       key={product.id}
-                      href={`/catalog/${product.id}`}
+                      href={`/product/${product.slug || product.id}`}
                       onClick={() => { setIsOpen(false); setQuery(""); }}
                       className="flex items-center gap-4 p-4 hover:bg-white/[0.03] transition-colors border-b border-white/[0.05] last:border-0"
                     >

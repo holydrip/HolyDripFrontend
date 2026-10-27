@@ -1,3 +1,13 @@
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Політика конфіденційності",
+  description: "Політика конфіденційності та захисту персональних даних HOLY DRIP.",
+  alternates: {
+    canonical: "/info/privacy",
+  },
+};
+
 export default function PrivacyPage() {
     return (
         <main className="w-full min-h-screen py-32 px-6 sm:px-12 md:px-[70px] text-white/90 leading-relaxed font-sans" style={{ backgroundColor: "transparent" }}>
