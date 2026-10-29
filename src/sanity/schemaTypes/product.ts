@@ -86,6 +86,26 @@ export default defineType({
             type: 'string',
         }),
         defineField({
+            name: 'availability',
+            title: 'Статус наличия / доставки (напр. В наявності в Києві (1–2 дні))',
+            type: 'string',
+        }),
+        defineField({
+            name: 'condition',
+            title: 'Состояние (напр. 10/10 (Новий з бірками))',
+            type: 'string',
+        }),
+        defineField({
+            name: 'season',
+            title: 'Сезон (напр. All-Season / Мультисезонний)',
+            type: 'string',
+        }),
+        defineField({
+            name: 'authenticity',
+            title: 'Аутентичность (напр. 100% Curated Piece)',
+            type: 'string',
+        }),
+        defineField({
             name: 'images',
             title: 'Галерея изображений',
             type: 'array',

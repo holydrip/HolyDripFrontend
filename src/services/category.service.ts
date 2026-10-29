@@ -38,6 +38,10 @@ export const CategoryService = {
                 sizes,
                 description,
                 "material": material,
+                condition,
+                season,
+                authenticity,
+                availability,
                 "measurements": measurements[]{ size, details },
                 "categoryId": category->slug.current
             }
@@ -62,6 +66,10 @@ export const CategoryService = {
                 sizes,
                 description,
                 "material": material,
+                condition,
+                season,
+                authenticity,
+                availability,
                 "measurements": measurements[]{ size, details },
                 "categoryId": category->slug.current
             }`;

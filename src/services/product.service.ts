@@ -13,6 +13,10 @@ export const ProductService = {
             "sizes": coalesce(sizes, []),
             description,
             material,
+            condition,
+            season,
+            authenticity,
+            availability,
             "measurements": measurements[]{ size, details },
             "categoryId": category->slug.current
         }`;
@@ -34,6 +38,10 @@ export const ProductService = {
             "sizes": coalesce(sizes, []),
             description,
             material,
+            condition,
+            season,
+            authenticity,
+            availability,
             "measurements": measurements[]{ size, details },
             "categoryId": category->slug.current
         }`;
@@ -61,6 +69,10 @@ export const ProductService = {
             sizes,
             description,
             material,
+            condition,
+            season,
+            authenticity,
+            availability,
             "measurements": measurements[]{ size, details },
             "categoryId": category->slug.current
         }`;

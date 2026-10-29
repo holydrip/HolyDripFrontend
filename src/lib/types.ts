@@ -14,6 +14,10 @@ export type Product = {
   sizes: string[]; 
   description?: string;
   material?: string;
+  condition?: string;
+  season?: string;
+  authenticity?: string;
+  availability?: string;
   measurements?: { size: string, details: string }[];
   categoryId: string;
 };

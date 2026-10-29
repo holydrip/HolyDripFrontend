@@ -71,7 +71,7 @@ export default function ProductClient({
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
               <span className="text-[10px] uppercase tracking-[2px] text-emerald-300 font-medium">
-                В наявності в Києві (1–2 дні)
+                {product.availability || "В наявності в Києві (1–2 дні)"}
               </span>
             </div>
 
@@ -160,15 +160,15 @@ export default function ProductClient({
                 </div>
                 <div>
                   <span className="text-white/40 block text-[10px] uppercase tracking-[1px] mb-0.5">Стан</span>
-                  <span className="text-white/90 font-light">10/10 (Новий з бірками)</span>
+                  <span className="text-white/90 font-light">{product.condition || "10/10 (Новий з бірками)"}</span>
                 </div>
                 <div>
                   <span className="text-white/40 block text-[10px] uppercase tracking-[1px] mb-0.5">Сезон</span>
-                  <span className="text-white/90 font-light">All-Season / Мультисезонний</span>
+                  <span className="text-white/90 font-light">{product.season || "All-Season / Мультисезонний"}</span>
                 </div>
                 <div>
                   <span className="text-white/40 block text-[10px] uppercase tracking-[1px] mb-0.5">Автентичність</span>
-                  <span className="text-white/90 font-light">100% Curated Piece</span>
+                  <span className="text-white/90 font-light">{product.authenticity || "100% Curated Piece"}</span>
                 </div>
               </div>
 
