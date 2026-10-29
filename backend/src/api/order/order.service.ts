@@ -15,24 +15,50 @@ export class OrderService {
     ) {}
 
     async createOrder(dto: CreateOrderDto) {
-        // 1. Resolve product IDs (supporting both DB UUID and Sanity _id)
+        // 1. Resolve product IDs (supporting DB UUID, Sanity _id, and name)
         const itemsToCreate = await Promise.all(
             dto.items.map(async (i) => {
                 let product = await this.prisma.product.findFirst({
                     where: {
                         OR: [
                             { id: i.productId },
-                            { sanityId: i.productId }
+                            { sanityId: i.productId },
+                            { name: i.name?.trim() }
                         ]
                     }
                 });
 
                 if (!product) {
-                    product = await this.prisma.product.findFirst();
+                    let category = await this.prisma.category.findFirst();
+                    if (!category) {
+                        category = await this.prisma.category.create({
+                            data: {
+                                name: 'ARCHIVE',
+                                slug: 'archive',
+                                sanityId: 'archive-cat'
+                            }
+                        });
+                    }
+                    try {
+                        product = await this.prisma.product.create({
+                            data: {
+                                name: (i.name || 'Товар').trim(),
+                                price: i.price,
+                                images: i.image ? [i.image] : [],
+                                sizes: [i.size || 'ONE SIZE'],
+                                sanityId: i.productId,
+                                categoryId: category.id
+                            }
+                        });
+                    } catch (e) {
+                        product = await this.prisma.product.findFirst();
+                    }
                 }
 
                 return {
                     productId: product ? product.id : i.productId,
+                    name: (i.name || product?.name || 'Товар').trim(),
+                    image: i.image || product?.images?.[0] || '',
                     size: i.size || 'Не вказано',
                     quantity: i.quantity || 1,
                     price: i.price,
@@ -142,10 +168,13 @@ ${itemsList || 'Пусто'}
             ...order,
             items: order.items.map(item => ({
                 ...item,
-                product: item.product ? {
-                    ...item.product,
-                    name: item.product.name.trim()
-                } : item.product
+                name: (item.name || item.product?.name || 'Товар').trim(),
+                image: item.image || item.product?.images?.[0] || '',
+                product: {
+                    id: item.productId,
+                    name: (item.name || item.product?.name || 'Товар').trim(),
+                    images: item.image ? [item.image] : (item.product?.images || [])
+                }
             }))
         }));
     }
@@ -173,10 +202,13 @@ ${itemsList || 'Пусто'}
             ...order,
             items: order.items.map(item => ({
                 ...item,
-                product: item.product ? {
-                    ...item.product,
-                    name: item.product.name.trim()
-                } : item.product
+                name: (item.name || item.product?.name || 'Товар').trim(),
+                image: item.image || item.product?.images?.[0] || '',
+                product: {
+                    id: item.productId,
+                    name: (item.name || item.product?.name || 'Товар').trim(),
+                    images: item.image ? [item.image] : (item.product?.images || [])
+                }
             }))
         };
     }

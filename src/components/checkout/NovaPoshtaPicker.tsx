@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect, useRef, useTransition } from "react";
-import { Search, MapPin, Building2, Check, ChevronDown, RotateCcw } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Search, MapPin, Building2, Check, ChevronDown, RotateCcw, Package } from "lucide-react";
 
 interface CityItem {
   present: string;
   name: string;
   area: string;
   ref: string;
+  settlementRef?: string;
+  settlementType?: string;
 }
 
 interface WarehouseItem {
@@ -43,7 +45,7 @@ export function NovaPoshtaPicker({ value, onChange }: NovaPoshtaPickerProps) {
 
   // Warehouse state
   const [warehouseQuery, setWarehouseQuery] = useState("");
-  const [allWarehouses, setAllWarehouses] = useState<WarehouseItem[]>([]);
+  const [warehouses, setWarehouses] = useState<WarehouseItem[]>([]);
   const [selectedWarehouse, setSelectedWarehouse] = useState<WarehouseItem | null>(null);
   const [isWarehouseOpen, setIsWarehouseOpen] = useState(false);
   const [isWarehouseLoading, setIsWarehouseLoading] = useState(false);
@@ -65,7 +67,7 @@ export function NovaPoshtaPicker({ value, onChange }: NovaPoshtaPickerProps) {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Search cities debounced
+  // Search cities debounced (searches all cities, towns, and villages in Ukraine)
   useEffect(() => {
     if (selectedCity && cityQuery === selectedCity.name) return;
     if (!cityQuery.trim() || cityQuery.trim().length < 2) {
@@ -96,39 +98,47 @@ export function NovaPoshtaPicker({ value, onChange }: NovaPoshtaPickerProps) {
     return () => clearTimeout(timer);
   }, [cityQuery, selectedCity]);
 
-  // Load warehouses when selected city changes
+  // Load warehouses with live search on typing
   useEffect(() => {
     if (!selectedCity) {
-      setAllWarehouses([]);
+      setWarehouses([]);
       setSelectedWarehouse(null);
       return;
     }
 
+    // Don't re-query if user already selected a warehouse and the query is its exact description
+    if (selectedWarehouse && warehouseQuery === selectedWarehouse.description) return;
+
     let isCancelled = false;
-    const fetchWarehouses = async () => {
+    const timer = setTimeout(async () => {
       setIsWarehouseLoading(true);
       try {
         const res = await fetch("/api/novaposhta", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ action: "warehouses", cityRef: selectedCity.ref }),
+          body: JSON.stringify({
+            action: "warehouses",
+            cityRef: selectedCity.ref,
+            settlementRef: selectedCity.settlementRef,
+            query: warehouseQuery,
+          }),
         });
         const data = await res.json();
         if (!isCancelled && data.success && data.warehouses) {
-          setAllWarehouses(data.warehouses);
+          setWarehouses(data.warehouses);
         }
       } catch (err) {
         console.error("Failed to load warehouses:", err);
       } finally {
         if (!isCancelled) setIsWarehouseLoading(false);
       }
-    };
+    }, warehouseQuery.trim() ? 250 : 0);
 
-    fetchWarehouses();
     return () => {
       isCancelled = true;
+      clearTimeout(timer);
     };
-  }, [selectedCity]);
+  }, [selectedCity, warehouseQuery, selectedWarehouse]);
 
   // Handle select city
   const handleSelectCity = (city: CityItem) => {
@@ -171,13 +181,6 @@ export function NovaPoshtaPicker({ value, onChange }: NovaPoshtaPickerProps) {
     }
   };
 
-  // Filter warehouses based on user typing
-  const filteredWarehouses = allWarehouses.filter((w) => {
-    if (!warehouseQuery.trim()) return true;
-    const q = warehouseQuery.toLowerCase();
-    return w.description.toLowerCase().includes(q) || w.number === q;
-  });
-
   if (isManual) {
     return (
       <div className="flex flex-col gap-2 sm:col-span-2">
@@ -209,7 +212,7 @@ export function NovaPoshtaPicker({ value, onChange }: NovaPoshtaPickerProps) {
       <div className="flex flex-col gap-2 relative" ref={cityDropdownRef}>
         <div className="flex items-center justify-between">
           <div className="text-[10px] uppercase tracking-[2px] text-white/40">
-            1. Місто доставки *
+            1. Місто або населений пункт доставки *
           </div>
           <button
             type="button"
@@ -230,7 +233,7 @@ export function NovaPoshtaPicker({ value, onChange }: NovaPoshtaPickerProps) {
             onFocus={() => {
               if (citySuggestions.length > 0) setIsCityOpen(true);
             }}
-            placeholder="Введіть назву міста (наприклад: Київ, Львів...)"
+            placeholder="Введіть місто або село (наприклад: Київ, Львів, Козин, Чайки...)"
             className="w-full bg-transparent border-b border-white/20 px-0 py-3 text-sm text-white placeholder-white/30 outline-none focus:border-white transition-colors pr-8"
           />
           <div className="absolute right-0 top-1/2 -translate-y-1/2 text-white/40">
@@ -262,9 +265,9 @@ export function NovaPoshtaPicker({ value, onChange }: NovaPoshtaPickerProps) {
         {/* City Dropdown */}
         {isCityOpen && citySuggestions.length > 0 && (
           <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto bg-black/95 border border-white/20 shadow-2xl backdrop-blur-md">
-            {citySuggestions.map((city) => (
+            {citySuggestions.map((city, idx) => (
               <button
-                key={city.ref}
+                key={city.ref ? city.ref + idx : idx}
                 type="button"
                 onClick={() => handleSelectCity(city)}
                 className="w-full text-left px-4 py-3 hover:bg-white/[0.08] border-b border-white/[0.05] last:border-none transition-colors flex items-center justify-between"
@@ -291,17 +294,18 @@ export function NovaPoshtaPicker({ value, onChange }: NovaPoshtaPickerProps) {
             value={warehouseQuery}
             onChange={(e) => {
               setWarehouseQuery(e.target.value);
+              setSelectedWarehouse(null);
               setIsWarehouseOpen(true);
             }}
             onFocus={() => {
-              if (selectedCity && allWarehouses.length > 0) setIsWarehouseOpen(true);
+              if (selectedCity) setIsWarehouseOpen(true);
             }}
             placeholder={
               !selectedCity
-                ? "Спочатку оберіть місто вище"
+                ? "Спочатку оберіть населений пункт вище"
                 : isWarehouseLoading
-                ? "Завантаження відділень..."
-                : "Введіть номер відділення або вулицю"
+                ? "Пошук відділень..."
+                : "Введіть номер відділення, поштомату або вулицю"
             }
             className="w-full bg-transparent border-b border-white/20 px-0 py-3 text-sm text-white placeholder-white/30 outline-none focus:border-white transition-colors disabled:opacity-40 disabled:cursor-not-allowed pr-8"
           />
@@ -317,29 +321,39 @@ export function NovaPoshtaPicker({ value, onChange }: NovaPoshtaPickerProps) {
         {/* Warehouse Dropdown */}
         {isWarehouseOpen && selectedCity && (
           <div className="absolute top-full left-0 right-0 z-50 mt-1 max-h-64 overflow-y-auto bg-black/95 border border-white/20 shadow-2xl backdrop-blur-md">
-            {filteredWarehouses.length === 0 ? (
+            {warehouses.length === 0 ? (
               <div className="p-4 text-xs text-white/40 text-center">
                 {isWarehouseLoading ? "Отримуємо список відділень..." : "Відділень за цим запитом не знайдено"}
               </div>
             ) : (
-              filteredWarehouses.slice(0, 80).map((w) => (
-                <button
-                  key={w.ref}
-                  type="button"
-                  onClick={() => handleSelectWarehouse(w)}
-                  className="w-full text-left px-4 py-3 hover:bg-white/[0.08] border-b border-white/[0.05] last:border-none transition-colors flex items-start justify-between gap-3"
-                >
-                  <div className="flex items-start gap-2.5">
-                    <Building2 size={15} className="text-white/40 shrink-0 mt-0.5" />
-                    <div>
-                      <div className="text-xs text-white/90">{w.description}</div>
+              warehouses.map((w) => {
+                const isPostomat = w.category === "Postomat" || w.description.toLowerCase().includes("поштомат");
+                return (
+                  <button
+                    key={w.ref}
+                    type="button"
+                    onClick={() => handleSelectWarehouse(w)}
+                    className="w-full text-left px-4 py-3 hover:bg-white/[0.08] border-b border-white/[0.05] last:border-none transition-colors flex items-start justify-between gap-3"
+                  >
+                    <div className="flex items-start gap-2.5">
+                      {isPostomat ? (
+                        <Package size={15} className="text-emerald-400 shrink-0 mt-0.5" />
+                      ) : (
+                        <Building2 size={15} className="text-white/40 shrink-0 mt-0.5" />
+                      )}
+                      <div>
+                        <div className="text-xs text-white/90">{w.description}</div>
+                        <div className="text-[10px] text-white/40 mt-0.5">
+                          {isPostomat ? "Поштомат Нової Пошти" : "Відділення Нової Пошти"}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  {selectedWarehouse?.ref === w.ref && (
-                    <Check size={14} className="text-emerald-400 shrink-0 mt-0.5" />
-                  )}
-                </button>
-              ))
+                    {selectedWarehouse?.ref === w.ref && (
+                      <Check size={14} className="text-emerald-400 shrink-0 mt-0.5" />
+                    )}
+                  </button>
+                );
+              })
             )}
           </div>
         )}
