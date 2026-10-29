@@ -13,6 +13,7 @@ export type Product = {
   price: number;
   sizes: string[]; 
   description?: string;
+  material?: string;
   measurements?: { size: string, details: string }[];
   categoryId: string;
 };

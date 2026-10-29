@@ -81,6 +81,11 @@ export default defineType({
             validation: (rule: any) => rule.required()
         }),
         defineField({
+            name: 'material',
+            title: 'Материал изделия',
+            type: 'string',
+        }),
+        defineField({
             name: 'images',
             title: 'Галерея изображений',
             type: 'array',

@@ -37,6 +37,7 @@ export const CategoryService = {
                 "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
                 sizes,
                 description,
+                "material": material,
                 "measurements": measurements[]{ size, details },
                 "categoryId": category->slug.current
             }
@@ -60,6 +61,7 @@ export const CategoryService = {
                 "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
                 sizes,
                 description,
+                "material": material,
                 "measurements": measurements[]{ size, details },
                 "categoryId": category->slug.current
             }`;

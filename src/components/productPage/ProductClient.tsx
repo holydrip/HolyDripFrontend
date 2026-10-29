@@ -30,8 +30,9 @@ export default function ProductClient({
   const [isQuickBuyOpen, setIsQuickBuyOpen] = useState(false);
   const [isSizeChartOpen, setIsSizeChartOpen] = useState(false);
 
-  // Derive material based on product title or description
+  // Derive material based on custom product field or title/description
   const detectMaterial = () => {
+    if (product.material && product.material.trim()) return product.material.trim();
     const text = (product.name + " " + (product.description || "")).toLowerCase();
     if (text.includes("denim") || text.includes("jeans") || text.includes("джинс")) return "100% Cotton Denim / Щільний денім";
     if (text.includes("leather") || text.includes("шкір")) return "Преміальна шкіра / Premium Leather";

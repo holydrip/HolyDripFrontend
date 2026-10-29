@@ -12,6 +12,7 @@ export const ProductService = {
             "images": coalesce(images[]{ "url": coalesce(secure_url, asset->url) }.url, []),
             "sizes": coalesce(sizes, []),
             description,
+            material,
             "measurements": measurements[]{ size, details },
             "categoryId": category->slug.current
         }`;
@@ -32,6 +33,7 @@ export const ProductService = {
             "images": coalesce(images[]{ "url": coalesce(secure_url, asset->url) }.url, []),
             "sizes": coalesce(sizes, []),
             description,
+            material,
             "measurements": measurements[]{ size, details },
             "categoryId": category->slug.current
         }`;
@@ -58,6 +60,7 @@ export const ProductService = {
             "images": images[]{ "url": coalesce(secure_url, asset->url) }.url,
             sizes,
             description,
+            material,
             "measurements": measurements[]{ size, details },
             "categoryId": category->slug.current
         }`;
